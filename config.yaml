@@ -1,0 +1,30 @@
+# Per-stage allowed days before a candidate is considered stalled.
+# "Stalled" means days_in_stage > threshold (strictly greater; exactly at
+# threshold is NOT stalled).
+thresholds:
+  applied: 3
+  screening: 3
+  interview: 5
+  final_interview: 4
+  offer: 2
+
+# Stage names a candidate can be in and never be flagged, regardless of
+# how long they've been there.
+terminal_stages:
+  - hired
+  - rejected
+  - withdrawn
+
+# score = days_over_threshold * stage_weight * priority_weight
+# Later stages and higher-priority roles weigh more heavily.
+stage_weights:
+  applied: 1
+  screening: 1.5
+  interview: 2
+  final_interview: 3
+  offer: 4
+
+priority_weights:
+  high: 3
+  medium: 2
+  low: 1

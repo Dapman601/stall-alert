@@ -1,0 +1,26 @@
+candidate_id,candidate_name,role,stage,stage_entered_date,owner,last_contact_date,role_priority,notes
+C001,Alice Johnson,Software Engineer,applied,2026-10-12,Sam Reed,2026-10-13,high,
+C002,Bob Lee,Data Analyst,applied,2026-10-13,Priya Nair,2026-10-13,medium,
+C003,Carol Smith,Product Manager,screening,2026-10-13,Jon Ortiz,2026-10-14,medium,
+C004,David Kim,Product Manager,screening,2026-10-12,Jon Ortiz,2026-10-12,medium,
+C005,Elena Garcia,Backend Engineer,interview,2026-10-09,Sam Reed,2026-10-10,high,
+C006,Frank Wright,Backend Engineer,interview,2026-10-08,Sam Reed,2026-10-09,high,
+C007,Grace Park,Designer,final_interview,2026-10-08,Priya Nair,2026-10-08,low,
+C008,Henry Cho,Designer,Final Interview,2026-10-07,Priya Nair,2026-10-09,medium,
+C009,Irene Novak,Sales Rep,offer,2026-10-14,Jon Ortiz,2026-10-14,high,
+C010,Jack Daniels,Sales Rep,offer,2026-10-13,Jon Ortiz,2026-10-13,high,
+C011,Karen White,Recruiter Ops,final-interview,2026-10-06,Sam Reed,2026-10-07,high,
+C012,Leo Martin,QA Engineer,hired,2026-09-01,Priya Nair,2026-09-20,medium,Start date confirmed
+C013,Mia Chen,QA Engineer,rejected,2026-09-15,Jon Ortiz,2026-09-16,low,Did not pass final round
+C014,Noah Davis,QA Engineer,withdrawn,2026-09-20,Sam Reed,2026-09-21,medium,Accepted another offer
+C015,Olivia Brooks,UX Researcher,interview,2026-10-01,Priya Nair,2026-10-02,medium,Candidate asked to put things on hold while relocating
+C016,Paul Reyes,Marketing Lead,screening,,Jon Ortiz,2026-10-10,medium,
+C017,Quinn Harper,Marketing Lead,interview,2026/10/10,Sam Reed,2026-10-11,high,
+C018,Rachel Kim,Sales Rep,offer,2026-10-20,Priya Nair,2026-10-14,high,
+C019,Steve Young,Engineer,onboarding,2026-10-05,Jon Ortiz,2026-10-06,medium,
+C020,Tina Brooks,Engineer,applied,2026-10-15,Sam Reed,15th Oct,low,
+C021,Uma Patel,Engineer,applied,2026-10-10,Priya Nair,2026-10-11,medium,
+C022,Victor Hugo,Engineer,screening,2026-10-02,Jon Ortiz,2026-10-05,low,
+C023,Wendy Alo,Engineer,interview,2026-10-07,Sam Reed,2026-10-08,medium,
+C024,Xander Lee,Engineer,applied,2026-10-14,Priya Nair,2026-10-14,low,
+C025,Yara Singh,Engineer,final_interview,2026-10-01,Jon Ortiz,2026-10-02,high,
