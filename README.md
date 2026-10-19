@@ -140,15 +140,18 @@ of guessed silently:
 10. CLI default output format is `table`; `--top` with no value shows
     all stalled candidates.
 11. The AI layer's "no invented names" check is a heuristic, not an NLP
-    name detector: it flags capitalized words (other than the first
-    word of the sentence) that aren't in a small built-in list of common
-    action vocabulary and aren't drawn from the candidate's own name or
-    owner fields. This can occasionally over- or under-flag; it's
+    name detector: it flags capitalized words that aren't in a small
+    built-in list of common action vocabulary and aren't drawn from the
+    candidate's own name/role/stage fields or a row/context month name.
+    As of Day 2 Fix 3, the first word of the sentence is **not**
+    exempt — it's checked the same as any other word (see Day 2 #3
+    below). This can occasionally over- or under-flag; it's
     intentionally simple for a thin, iterable AI layer.
 12. Both the `action` and `reason` fields from the model are checked for
-    invented names/dates/numbers; only `action` enforces the 25-word cap
-    (per `directive.md`, `reason` is capped at 20 words there, but that
-    cap is advisory to the model, not re-validated in code).
+    invented names/dates/numbers/durations. `action` enforces the
+    25-word cap; as of Day 2 Fix 4, `reason` enforces a 20-word cap in
+    code too (previously that cap existed only as advisory text in
+    `directive.md`).
 13. `ActionResult.fallback_reason` is `None` when `source == "ai"`, and
     is populated for every fallback case (API error, invalid JSON,
     failed validation, or `--no-ai`) so the output explains *why* a row
@@ -163,3 +166,93 @@ of guessed silently:
     `choices[0].message.content`. `STALL_ALERT_MODEL` must be an
     OpenRouter model id (default `anthropic/claude-sonnet-4.5`); the
     key comes from `OPENROUTER_API_KEY`, never hardcoded.
+
+### Day 2: reducing the AI fallback rate
+
+16. **Fix 1 — computed context sent to the model.** The payload to the
+    model now includes `today`, `days_in_stage`, `threshold`, and
+    `days_over_threshold` (not just raw row fields), and those four
+    values are added to the validator's allowed-numbers/dates set.
+    Rationale: without them, the model had no way to know elapsed time
+    and guessed (usually wrong); this grounds it in facts it can cite
+    correctly.
+17. **Fix 2 — date-aware matching.** A row/context date may appear in
+    model text as ISO (`2026-10-05`), `Oct 5`, `October 5`, `5 October`,
+    or a bare `5th`; all are recognized as the same date if the
+    (month, day) — or just the day, for a bare ordinal — matches a
+    row/context date. Month names/abbreviations derived from any
+    row/context date are never flagged as invented names, independent
+    of whether they're paired with a matching day in the same phrase.
+18. **Fix 3 — no first-word exemption.** The capitalized-word name
+    check used to skip word index 0 unconditionally ("sentence-initial
+    capitalization, not a name"). It no longer does; an invented name
+    at the very start of `action` or `reason` is now caught. This
+    required expanding the common-vocabulary stoplist (e.g. `complete`,
+    `no`, `high`/`medium`/`low`, `within`) so legitimate sentence
+    starters observed in real runs don't newly fail — see Known
+    Limitations for the one gap this exposed before Fix 5 closed it.
+19. **Fix 4 — 20-word reason limit enforced in code.** `reason` is now
+    validated the same way `action` is (strictly more than 20 words
+    fails), matching the limit already stated in `directive.md`.
+20. **Fix 5 — number words and duration phrases.** Number words
+    (`one`–`twenty`, `dozen`) are treated like digits in the number
+    check wherever they appear. Vague quantities (`a couple`, `couple`,
+    `a few`, `few`, `several`, `some`) have no fixed value, so they
+    only matter - and always fail - when describing a duration
+    (`month(s)`/`week(s)`/`day(s)`/`hour(s)`); ordinary non-duration
+    use ("answer some questions") is not a claim about elapsed time
+    and passes untouched. A `<quantity> month(s)/week(s)/day(s)/
+    hour(s)` phrase is checked against the same allowed-numbers set as
+    any other number, with **no unit conversion** — see Known
+    Limitations for why this is intentionally incomplete.
+21. **Day 2 wrap-up — deadline rule, action only.** In the `action`
+    field only, `"within N days"`, `"within N business days"`, or
+    `"within N hours"` (N as a digit or number word, not a vague
+    quantity) is allowed as a suggested deadline independent of
+    context, as long as N is within a sane bound (≤5 for days/business
+    days, ≤48 for hours). Exceeding the bound, or any other phrasing
+    (`"by Friday"`, `"in a couple of days"`, a bare `"10 days"` with no
+    "within"), is checked exactly as before. This exemption **never**
+    applies to `reason` — every number there must still come from the
+    row/context, with no exceptions.
+
+## Known Limitations
+
+Gaps found and deliberately left unfixed during Day 2, so they're
+visible rather than silently absorbed:
+
+- **Duration unit mismatch (documented via an `xfail` test,
+  `test_meaning_mismatch_months_vs_day_based_threshold_not_caught`).**
+  Fix 5's duration check compares only the bare numeral in a
+  `month(s)`/`week(s)` phrase against the allowed-numbers set — it
+  never converts "2 months" to its day-equivalent (~60 days) and
+  compares that against `days_in_stage`/`threshold`/
+  `days_over_threshold`. So if a row's `threshold` happens to equal the
+  face-value number in the phrase (e.g. `threshold=2` and the model
+  writes "2 months"), the phrase passes even though the units don't
+  match and the claim is almost certainly wrong. Fixing this properly
+  would mean parsing the unit and doing real conversion with a
+  tolerance — a bigger feature than "treat number words like digits,"
+  so it's left open rather than built today.
+- **Fix 3 exposed, then Fix 5 resolved, a number-words-as-names false
+  positive.** Before Fix 5 existed, removing the first-word exemption
+  (Fix 3) caused a real model response starting "One day past
+  threshold..." to be flagged as `possible invented name 'One'` —
+  observed live in a Fix 4 test run. Fix 5's quantity-word pass now
+  masks recognized number words (including at the start of a sentence)
+  before the name check ever runs, so this specific case is resolved;
+  flagged here because it was a real regression introduced by Fix 3
+  and fixed by a later, separate fix rather than by Fix 3 itself.
+- **What's actually known about Fix 3/4 live-run fallbacks, and what
+  isn't.** Only the Fix 4 runs' full output was captured to disk. Of
+  those: one fallback (Uma Patel, run 1) was the model citing "within 2
+  days," a number with no basis in the row/context — the pre-existing
+  generic number check, not a new-check side effect. One fallback
+  (Victor Hugo, run 3) was the model citing "11 days" with no match in
+  context — same, pre-existing generic check. The third Fix 4 fallback
+  (Frank Wright, run 3) is the "One" case described above, which *was*
+  caused by a new check (Fix 3). The Fix 3 runs' fallback reasons were
+  never captured to a file — only summary counts were shown via `head`
+  — so **it is not known** whether either of those two fallbacks was
+  caused by Fix 3's new first-word check or was an ordinary cause; that
+  data no longer exists and would require a fresh run to find out.

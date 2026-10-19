@@ -42,6 +42,12 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--directive", default="directive.md", help="Path to the AI directive file"
     )
+    parser.add_argument(
+        "--report",
+        action="store_true",
+        help="Print an AI fallback-rate summary (stalled/ai/fallback counts, "
+        "fallback rate, and fallback reasons grouped by cause)",
+    )
     return parser.parse_args(argv)
 
 
@@ -96,13 +102,74 @@ def run(argv: Optional[list[str]] = None) -> int:
                 row, "AI disabled via --no-ai flag"
             )
         else:
-            actions[row.candidate_id] = ai_actions.suggest_action(
-                client, model, directive_text, row
+            ctx = ai_actions.ModelContext(
+                row=row,
+                today=today,
+                days_in_stage=rc.status.days_in_stage,
+                threshold=rc.status.threshold,
+                days_over_threshold=rc.status.days_over_threshold,
             )
+            actions[row.candidate_id] = ai_actions.suggest_action(
+                client, model, directive_text, ctx
+            )
+
+    if args.report:
+        print(render_report(ranked, actions))
+        print("")
 
     output = render(args.format, today, bad_rows, warnings, on_hold, ranked, actions)
     print(output)
     return 0
+
+
+_FALLBACK_CAUSES = [
+    ("invalid_json", "invalid JSON"),
+    ("api_error", "API error"),
+    ("flagged_number", "invented number"),
+    ("flagged_date", "invented date"),
+    ("flagged_duration", "invented duration"),
+    ("flagged_name", "possible invented name"),
+    ("overlong_action", "more than"),
+    ("invalid_who", "'who' must be"),
+    ("missing_or_invalid_field", "missing or invalid"),
+    ("ai_disabled", "--no-ai"),
+]
+
+
+def classify_fallback_causes(reason: str) -> list[str]:
+    """Substring-match the fallback_reason text into cause buckets.
+    Not mutually exclusive - one reason can hit more than one bucket.
+    Diagnostic only, not a stable API."""
+    causes = [label for label, needle in _FALLBACK_CAUSES if needle in reason]
+    return causes or ["other"]
+
+
+def render_report(ranked: list[RankedCandidate], actions: dict) -> str:
+    stalled_count = len(ranked)
+    ai_count = sum(1 for rc in ranked if actions[rc.status.row.candidate_id].source == "ai")
+    fallback_count = stalled_count - ai_count
+    rate = (fallback_count / stalled_count * 100) if stalled_count else 0.0
+
+    cause_counts: dict[str, int] = {}
+    for rc in ranked:
+        action = actions[rc.status.row.candidate_id]
+        if action.source != "fallback":
+            continue
+        for cause in classify_fallback_causes(action.fallback_reason or ""):
+            cause_counts[cause] = cause_counts.get(cause, 0) + 1
+
+    lines = [
+        "=== AI fallback report ===",
+        f"stalled: {stalled_count}  ai: {ai_count}  fallback: {fallback_count}  "
+        f"fallback_rate: {rate:.1f}%",
+        "fallback reasons by cause (not mutually exclusive):",
+    ]
+    if cause_counts:
+        for cause, count in sorted(cause_counts.items(), key=lambda kv: (-kv[1], kv[0])):
+            lines.append(f"  {cause}: {count}")
+    else:
+        lines.append("  (none)")
+    return "\n".join(lines)
 
 
 def _build_client():
@@ -174,7 +241,14 @@ def _ranked_to_dict(rc: RankedCandidate, actions: dict) -> dict:
         "who": action.who if action else None,
         "action_source": action.source if action else None,
         "fallback_reason": action.fallback_reason if action else None,
+        "raw_response": action.raw_response if action else None,
     }
+
+
+def _truncate(text: Optional[str], limit: int = 500) -> str:
+    if text is None:
+        return "(none)"
+    return text if len(text) <= limit else text[:limit] + "..."
 
 
 def _render_table(today, bad_rows, warnings, on_hold, ranked, actions) -> str:
@@ -206,6 +280,7 @@ def _render_table(today, bad_rows, warnings, on_hold, ranked, actions) -> str:
         if d["fallback_reason"]:
             action_line += f" (fallback reason: {d['fallback_reason']})"
         lines.append(action_line)
+        lines.append(f"   raw_response: {_truncate(d['raw_response'])}")
     return "\n".join(lines)
 
 
@@ -230,16 +305,17 @@ def _render_md(today, bad_rows, warnings, on_hold, ranked, actions) -> str:
     lines.append(f"## Stalled candidates, ranked ({len(ranked)})")
     lines.append(
         "| Rank | Candidate | Role / Stage | Days in stage | Threshold | "
-        "Breakdown | Score | Action | Who | Source | Fallback reason |"
+        "Breakdown | Score | Action | Who | Source | Fallback reason | Raw response |"
     )
-    lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|")
     for i, rc in enumerate(ranked, start=1):
         d = _ranked_to_dict(rc, actions)
+        raw = _truncate(d["raw_response"]).replace("|", "\\|").replace("\n", " ")
         lines.append(
             f"| {i} | {d['candidate_name']} ({d['candidate_id']}) | "
             f"{d['role']} / {d['stage']} | {d['days_in_stage']} | {d['threshold']} | "
             f"{d['score_breakdown']} | {d['score']} | {d['action']} | {d['who']} | "
-            f"{d['action_source']} | {d['fallback_reason'] or ''} |"
+            f"{d['action_source']} | {d['fallback_reason'] or ''} | {raw} |"
         )
     return "\n".join(lines)
 

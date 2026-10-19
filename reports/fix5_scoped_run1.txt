@@ -1,0 +1,250 @@
+=== AI fallback report ===
+stalled: 11  ai: 11  fallback: 0  fallback_rate: 0.0%
+fallback reasons by cause (not mutually exclusive):
+  (none)
+
+{
+  "today": "2026-10-16",
+  "bad_rows": [
+    {
+      "row": 17,
+      "reason": "missing required field 'stage_entered_date'"
+    },
+    {
+      "row": 18,
+      "reason": "stage_entered_date '2026/10/10' is not a valid %Y-%m-%d date"
+    },
+    {
+      "row": 19,
+      "reason": "stage_entered_date 2026-10-20 is after --today 2026-10-16"
+    },
+    {
+      "row": 20,
+      "reason": "stage 'onboarding' (normalized 'onboarding') is not listed in config thresholds or terminal_stages"
+    }
+  ],
+  "warnings": [
+    {
+      "row": 21,
+      "reason": "last_contact_date '15th Oct' is not a valid %Y-%m-%d date; ignoring it"
+    }
+  ],
+  "on_hold": [
+    {
+      "candidate_id": "C015",
+      "candidate_name": "Olivia Brooks",
+      "stage": "interview"
+    }
+  ],
+  "stalled": [
+    {
+      "candidate_id": "C025",
+      "candidate_name": "Yara Singh",
+      "role": "Engineer",
+      "stage": "final_interview",
+      "owner": "Jon Ortiz",
+      "days_in_stage": 11,
+      "threshold": 4,
+      "days_over_threshold": 7,
+      "stage_weight": 3,
+      "priority_weight": 3,
+      "score": 63,
+      "score_breakdown": "7 x 3 x 3 = 63",
+      "action": "Schedule final interview with Yara Singh immediately for Engineer role",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Schedule final interview with Yara Singh immediately for Engineer role\", \"who\": \"recruiter\", \"reason\": \"7 days overdue on high-priority role, no contact since Oct 2\"}\n```"
+    },
+    {
+      "candidate_id": "C011",
+      "candidate_name": "Karen White",
+      "role": "Recruiter Ops",
+      "stage": "final-interview",
+      "owner": "Sam Reed",
+      "days_in_stage": 8,
+      "threshold": 4,
+      "days_over_threshold": 4,
+      "stage_weight": 3,
+      "priority_weight": 3,
+      "score": 36,
+      "score_breakdown": "4 x 3 x 3 = 36",
+      "action": "Schedule final interview with Sam Reed immediately, candidate has been waiting 8 days",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Schedule final interview with Sam Reed immediately, candidate has been waiting 8 days\", \"who\": \"recruiter\", \"reason\": \"4 days over threshold in final-interview stage\"}\n```"
+    },
+    {
+      "candidate_id": "C008",
+      "candidate_name": "Henry Cho",
+      "role": "Designer",
+      "stage": "Final Interview",
+      "owner": "Priya Nair",
+      "days_in_stage": 7,
+      "threshold": 4,
+      "days_over_threshold": 3,
+      "stage_weight": 3,
+      "priority_weight": 2,
+      "score": 18,
+      "score_breakdown": "3 x 3 x 2 = 18",
+      "action": "Schedule final interview with Henry Cho immediately, already 3 days overdue",
+      "who": "owner",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Schedule final interview with Henry Cho immediately, already 3 days overdue\", \"who\": \"owner\", \"reason\": \"7 days in Final Interview stage, exceeds 4-day threshold\"}\n```"
+    },
+    {
+      "candidate_id": "C010",
+      "candidate_name": "Jack Daniels",
+      "role": "Sales Rep",
+      "stage": "offer",
+      "owner": "Jon Ortiz",
+      "days_in_stage": 3,
+      "threshold": 2,
+      "days_over_threshold": 1,
+      "stage_weight": 4,
+      "priority_weight": 3,
+      "score": 12,
+      "score_breakdown": "1 x 4 x 3 = 12",
+      "action": "Follow up with Jack Daniels on offer decision and address any questions",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Follow up with Jack Daniels on offer decision and address any questions\", \"who\": \"recruiter\", \"reason\": \"Offer stage exceeded threshold by 1 day without recent contact\"}\n```"
+    },
+    {
+      "candidate_id": "C022",
+      "candidate_name": "Victor Hugo",
+      "role": "Engineer",
+      "stage": "screening",
+      "owner": "Jon Ortiz",
+      "days_in_stage": 10,
+      "threshold": 3,
+      "days_over_threshold": 7,
+      "stage_weight": 1.5,
+      "priority_weight": 1,
+      "score": 10.5,
+      "score_breakdown": "7 x 1.5 x 1 = 10.5",
+      "action": "Contact Victor Hugo to schedule technical screening interview",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Contact Victor Hugo to schedule technical screening interview\", \"who\": \"recruiter\", \"reason\": \"7 days overdue on screening stage with no recent contact\"}\n```"
+    },
+    {
+      "candidate_id": "C023",
+      "candidate_name": "Wendy Alo",
+      "role": "Engineer",
+      "stage": "interview",
+      "owner": "Sam Reed",
+      "days_in_stage": 7,
+      "threshold": 5,
+      "days_over_threshold": 2,
+      "stage_weight": 2,
+      "priority_weight": 2,
+      "score": 8,
+      "score_breakdown": "2 x 2 x 2 = 8",
+      "action": "Schedule next interview round with Wendy Alo for Engineer role immediately",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Schedule next interview round with Wendy Alo for Engineer role immediately\", \"who\": \"recruiter\", \"reason\": \"2 days over threshold with no contact since Oct 8\"}\n```"
+    },
+    {
+      "candidate_id": "C007",
+      "candidate_name": "Grace Park",
+      "role": "Designer",
+      "stage": "final_interview",
+      "owner": "Priya Nair",
+      "days_in_stage": 6,
+      "threshold": 4,
+      "days_over_threshold": 2,
+      "stage_weight": 3,
+      "priority_weight": 1,
+      "score": 6,
+      "score_breakdown": "2 x 3 x 1 = 6",
+      "action": "Schedule final interview with Grace Park immediately",
+      "who": "owner",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Schedule final interview with Grace Park immediately\", \"who\": \"owner\", \"reason\": \"2 days overdue at final interview stage\"}\n```"
+    },
+    {
+      "candidate_id": "C006",
+      "candidate_name": "Frank Wright",
+      "role": "Backend Engineer",
+      "stage": "interview",
+      "owner": "Sam Reed",
+      "days_in_stage": 6,
+      "threshold": 5,
+      "days_over_threshold": 1,
+      "stage_weight": 2,
+      "priority_weight": 3,
+      "score": 6,
+      "score_breakdown": "1 x 2 x 3 = 6",
+      "action": "Schedule next interview round with Frank Wright for Backend Engineer role immediately",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Schedule next interview round with Frank Wright for Backend Engineer role immediately\", \"who\": \"recruiter\", \"reason\": \"Interview stage exceeded 5-day threshold by 1 day for high-priority role\"}\n```"
+    },
+    {
+      "candidate_id": "C001",
+      "candidate_name": "Alice Johnson",
+      "role": "Software Engineer",
+      "stage": "applied",
+      "owner": "Sam Reed",
+      "days_in_stage": 4,
+      "threshold": 3,
+      "days_over_threshold": 1,
+      "stage_weight": 1,
+      "priority_weight": 3,
+      "score": 3,
+      "score_breakdown": "1 x 1 x 3 = 3",
+      "action": "Review Alice Johnson's application and move to phone screen or reject.",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Review Alice Johnson's application and move to phone screen or reject.\", \"who\": \"recruiter\", \"reason\": \"High priority role, past 3-day threshold in applied stage.\"}\n```"
+    },
+    {
+      "candidate_id": "C004",
+      "candidate_name": "David Kim",
+      "role": "Product Manager",
+      "stage": "screening",
+      "owner": "Jon Ortiz",
+      "days_in_stage": 4,
+      "threshold": 3,
+      "days_over_threshold": 1,
+      "stage_weight": 1.5,
+      "priority_weight": 2,
+      "score": 3.0,
+      "score_breakdown": "1 x 1.5 x 2 = 3.0",
+      "action": "Complete phone screening with David Kim today",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Complete phone screening with David Kim today\", \"who\": \"recruiter\", \"reason\": \"Screening stage exceeded 3-day threshold by 1 day\"}\n```"
+    },
+    {
+      "candidate_id": "C021",
+      "candidate_name": "Uma Patel",
+      "role": "Engineer",
+      "stage": "applied",
+      "owner": "Priya Nair",
+      "days_in_stage": 4,
+      "threshold": 3,
+      "days_over_threshold": 1,
+      "stage_weight": 1,
+      "priority_weight": 2,
+      "score": 2,
+      "score_breakdown": "1 x 1 x 2 = 2",
+      "action": "Review Uma Patel's application and move to phone screen or reject by end of week",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Review Uma Patel's application and move to phone screen or reject by end of week\", \"who\": \"recruiter\", \"reason\": \"Application review overdue by 1 day for medium priority Engineer role\"}\n```"
+    }
+  ]
+}
