@@ -1,0 +1,38 @@
+Day 3 messy-data manifest summary
+========================================
+Total rows: 5000
+  ai_ignore_instructions: 5
+  ai_nonjson_request: 5
+  ai_reassign_who: 5
+  ai_reveal_instructions: 5
+  clean: 4635
+  duplicate_id_different_role: 20
+  duplicate_id_same_role: 20
+  empty_notes: 20
+  empty_owner: 20
+  future_stage_entered_date: 20
+  impossible_date: 15
+  mixed_date_format:oct5_2026: 20
+  mixed_date_format:slash_mdy: 20
+  mixed_date_format:slash_ymd: 20
+  non_ascii_name:José García: 10
+  non_ascii_name:Ngozi Ọkọnkwọ: 10
+  non_ascii_name:李雷: 10
+  on_hold_variant:On Hold: 8
+  on_hold_variant:hold off: 8
+  on_hold_variant:no longer on hold: 8
+  on_hold_variant:on-hold: 8
+  on_hold_variant:onhold: 8
+  quoted_notes_with_linebreak: 20
+  unknown_stage:Final Interveiw: 15
+  unknown_stage:phone screen: 15
+  unquoted_comma_in_notes: 20
+  very_long_notes: 10
+  very_old_stage_date: 20
+
+ai_sample.csv rows: 40 (ai-aimed: 20)
+header_capitalized.csv rows: 50
+header_spaces.csv rows: 50
+header_reordered.csv rows: 50
+realistic_export.csv rows: 200
+cp1252-lossy rows: 20

@@ -1,0 +1,112 @@
+--- ai_ignore_instructions (n=5) ---
+  row 336 M05005: expected=stalled actual=('stalled', '')
+  row 2801 M05003: expected=stalled actual=('stalled', '')
+  row 3612 M05004: expected=stalled actual=('stalled', '')
+--- ai_nonjson_request (n=5) ---
+  row 1462 M05009: expected=stalled actual=('stalled', '')
+  row 1903 M05007: expected=stalled actual=('stalled', '')
+  row 2255 M05006: expected=stalled actual=('stalled', '')
+--- ai_reassign_who (n=5) ---
+  row 465 M05014: expected=stalled actual=('stalled', '')
+  row 1461 M05011: expected=stalled actual=('stalled', '')
+  row 1766 M05013: expected=stalled actual=('stalled', '')
+--- ai_reveal_instructions (n=5) ---
+  row 396 M05018: expected=stalled actual=('stalled', '')
+  row 1112 M05020: expected=stalled actual=('stalled', '')
+  row 1586 M05017: expected=stalled actual=('stalled', '')
+--- clean (n=4635) ---
+  row 2 M01325: expected=stalled actual=('stalled', '')
+  row 3 M02907: expected=stalled actual=('stalled', '')
+  row 4 M02216: expected=stalled actual=('stalled', '')
+--- duplicate_id_different_role (n=20) ---
+  row 664 M04822: expected=stalled actual=('stalled', '')
+  row 1038 M04813: expected=stalled actual=('stalled', '')
+  row 1294 M04816: expected=stalled actual=('stalled', '')
+--- duplicate_id_same_role (n=20) ---
+  row 435 M04783: expected=stalled actual=('stalled', '')
+  row 691 M04783: expected=stalled actual=('stalled', '')
+  row 729 M04786: expected=stalled actual=('stalled', '')
+--- empty_notes (n=20) ---
+  row 1050 M04941: expected=stalled actual=('stalled', '')
+  row 1073 M04946: expected=stalled actual=('stalled', '')
+  row 1185 M04952: expected=stalled actual=('stalled', '')
+--- empty_owner (n=20) ---
+  row 382 M04935: expected=bad_row actual=('bad_row', "missing required field 'owner'")
+  row 441 M04922: expected=bad_row actual=('bad_row', "missing required field 'owner'")
+  row 804 M04936: expected=bad_row actual=('bad_row', "missing required field 'owner'")
+--- future_stage_entered_date (n=20) ---
+  row 350 M04760: expected=bad_row actual=('bad_row', 'stage_entered_date 2026-11-12 is after --today 2026-10-20')
+  row 552 M04754: expected=bad_row actual=('bad_row', 'stage_entered_date 2026-11-30 is after --today 2026-10-20')
+  row 558 M04763: expected=bad_row actual=('bad_row', 'stage_entered_date 2026-10-26 is after --today 2026-10-20')
+--- impossible_date (n=15) ---
+  row 452 M04736: expected=bad_row actual=('bad_row', "stage_entered_date '2026-02-30' is not a valid %Y-%m-%d date")
+  row 548 M04745: expected=bad_row actual=('bad_row', "stage_entered_date '2026-02-30' is not a valid %Y-%m-%d date")
+  row 958 M04750: expected=bad_row actual=('bad_row', "stage_entered_date '2026-02-30' is not a valid %Y-%m-%d date")
+--- mixed_date_format:oct5_2026 (n=20) ---
+  row 349 M04682: expected=bad_row actual=('bad_row', "stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date")
+  row 485 M04688: expected=bad_row actual=('bad_row', "stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date")
+  row 607 M04678: expected=bad_row actual=('bad_row', "stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date")
+--- mixed_date_format:slash_mdy (n=20) ---
+  row 107 M04709: expected=bad_row actual=('bad_row', "stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date")
+  row 789 M04715: expected=bad_row actual=('bad_row', "stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date")
+  row 1639 M04701: expected=bad_row actual=('bad_row', "stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date")
+--- mixed_date_format:slash_ymd (n=20) ---
+  row 953 M04731: expected=bad_row actual=('bad_row', "stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date")
+  row 1136 M04725: expected=bad_row actual=('bad_row', "stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date")
+  row 1313 M04723: expected=bad_row actual=('bad_row', "stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date")
+--- non_ascii_name:José García (n=10) ---
+  row 866 M04971: expected=stalled actual=('stalled', '')
+  row 1163 M04977: expected=stalled actual=('stalled', '')
+  row 1747 M04979: expected=stalled actual=('stalled', '')
+--- non_ascii_name:Ngozi Ọkọnkwọ (n=10) ---
+  row 86 M04982: expected=stalled actual=('stalled', '')
+  row 281 M04983: expected=stalled actual=('stalled', '')
+  row 1135 M04984: expected=stalled actual=('stalled', '')
+--- non_ascii_name:李雷 (n=10) ---
+  row 216 M04997: expected=stalled actual=('stalled', '')
+  row 379 M04998: expected=stalled actual=('stalled', '')
+  row 404 M04999: expected=stalled actual=('stalled', '')
+--- on_hold_variant:On Hold (n=8) ---
+  row 1293 M04861: expected=on_hold actual=('on_hold', '')
+  row 1404 M04862: expected=on_hold actual=('on_hold', '')
+  row 3356 M04867: expected=on_hold actual=('on_hold', '')
+--- on_hold_variant:hold off (n=8) ---
+  row 1165 M04894: expected=stalled actual=('stalled', '')
+  row 1607 M04897: expected=stalled actual=('stalled', '')
+  row 2092 M04896: expected=stalled actual=('stalled', '')
+--- on_hold_variant:no longer on hold (n=8) ---
+  row 277 M04891: expected=on_hold actual=('on_hold', '')
+  row 894 M04890: expected=on_hold actual=('on_hold', '')
+  row 1230 M04887: expected=on_hold actual=('on_hold', '')
+--- on_hold_variant:on-hold (n=8) ---
+  row 119 M04872: expected=stalled actual=('stalled', '')
+  row 735 M04873: expected=stalled actual=('stalled', '')
+  row 966 M04875: expected=stalled actual=('stalled', '')
+--- on_hold_variant:onhold (n=8) ---
+  row 370 M04882: expected=stalled actual=('stalled', '')
+  row 1154 M04881: expected=stalled actual=('stalled', '')
+  row 1771 M04884: expected=stalled actual=('stalled', '')
+--- quoted_notes_with_linebreak (n=20) ---
+  row 838 M04668: expected=stalled actual=('stalled', '')
+  row 1190 M04659: expected=stalled actual=('stalled', '')
+  row 1270 M04656: expected=stalled actual=('stalled', '')
+--- unknown_stage:Final Interveiw (n=15) ---
+  row 124 M04835: expected=bad_row actual=('bad_row', "stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages")
+  row 155 M04844: expected=bad_row actual=('bad_row', "stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages")
+  row 692 M04831: expected=bad_row actual=('bad_row', "stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages")
+--- unknown_stage:phone screen (n=15) ---
+  row 5 M04854: expected=bad_row actual=('bad_row', "stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages")
+  row 229 M04849: expected=bad_row actual=('bad_row', "stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages")
+  row 385 M04846: expected=bad_row actual=('bad_row', "stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages")
+--- unquoted_comma_in_notes (n=20) ---
+  row 78 M04641: expected=stalled actual=('stalled', '')
+  row 326 M04637: expected=stalled actual=('stalled', '')
+  row 590 M04648: expected=stalled actual=('stalled', '')
+--- very_long_notes (n=10) ---
+  row 217 M04970: expected=stalled actual=('stalled', '')
+  row 909 M04968: expected=stalled actual=('stalled', '')
+  row 1584 M04965: expected=stalled actual=('stalled', '')
+--- very_old_stage_date (n=20) ---
+  row 302 M04904: expected=stalled actual=('stalled', '')
+  row 585 M04903: expected=stalled actual=('stalled', '')
+  row 673 M04909: expected=stalled actual=('stalled', '')

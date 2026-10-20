@@ -1,0 +1,12 @@
+{
+  "file": "messy_board_cp1252.csv",
+  "crash": null,
+  "total_manifest_rows": 5000,
+  "missing_rows": [],
+  "mismatches": {},
+  "mismatch_counts": {},
+  "truncated_notes": [],
+  "duplicate_id_findings": [],
+  "loaded_row_count": 4885,
+  "error_row_count": 115
+}

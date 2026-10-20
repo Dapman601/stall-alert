@@ -1,0 +1,51 @@
+notes,role_priority,last_contact_date,owner,stage_entered_date,stage,role,candidate_name,candidate_id
+,low,2026-09-23,Sam Reed,2026-09-23,offer,Recruiter Ops,Olivia Young,M01325
+,low,2026-09-21,Priya Nair,2026-09-21,final_interview,Backend Engineer,Steve Patel,M02907
+,high,2026-09-21,Jon Ortiz,2026-09-21,final_interview,Sales Rep,Victor Brooks,M02216
+,low,2026-09-22,Dana Cole,2026-09-22,applied,Backend Engineer,Steve Wright,M00466
+,medium,2026-09-22,Priya Nair,2026-09-22,applied,Designer,Olivia Harper,M01028
+,medium,2026-09-23,Dana Cole,2026-10-20,offer,Designer,Grace Patel,M00963
+,high,2026-09-20,Priya Nair,2026-10-17,interview,Recruiter Ops,Mia Alo,M04412
+,medium,2026-09-23,Sam Reed,2026-09-23,offer,Data Analyst,David Patel,M02181
+,high,2026-09-22,Dana Cole,2026-09-22,applied,Backend Engineer,Carol Johnson,M04518
+,low,2026-09-23,Jon Ortiz,2026-09-23,offer,Data Analyst,Rachel Chen,M04407
+,high,2026-09-23,Dana Cole,2026-09-23,offer,Designer,Bob Reyes,M02043
+,high,2026-09-20,Dana Cole,2026-09-20,interview,QA Engineer,Leo Smith,M02226
+,high,2026-09-22,Priya Nair,2026-10-19,applied,Backend Engineer,Carol Hugo,M02732
+,medium,2026-09-23,Jon Ortiz,2026-10-20,offer,Data Analyst,Wendy Brooks,M00224
+,medium,2026-09-20,Sam Reed,2026-09-20,interview,Designer,Steve Wright,M00227
+,medium,2026-09-21,Priya Nair,2026-10-18,final_interview,Product Manager,Noah Davis,M00125
+,low,2026-09-22,Marcus Lee,2026-10-19,applied,Designer,Yara Brooks,M00285
+,medium,2026-09-22,Priya Nair,2026-10-19,screening,Software Engineer,Jack Park,M02628
+,medium,2026-09-20,Jon Ortiz,2026-09-20,interview,Designer,Wendy Singh,M03908
+,medium,2026-09-22,Dana Cole,2026-10-19,applied,Software Engineer,Jack Kim,M02034
+,high,2026-09-22,Sam Reed,2026-10-19,applied,Software Engineer,Leo Hugo,M01789
+,medium,2026-09-21,Jon Ortiz,2026-10-18,final_interview,Software Engineer,Leo Garcia,M02742
+,medium,2026-09-22,Dana Cole,2026-09-22,applied,Software Engineer,Carol Park,M02026
+,low,2026-09-21,Priya Nair,2026-09-21,final_interview,Backend Engineer,Leo Johnson,M00880
+,high,2026-09-23,Sam Reed,2026-09-23,offer,QA Engineer,Noah Garcia,M02965
+,high,2026-09-23,Sam Reed,2026-10-20,offer,Backend Engineer,Alice Johnson,M02901
+,low,2026-09-22,Dana Cole,2026-10-19,screening,QA Engineer,Alice Chen,M01154
+,low,2026-09-22,Priya Nair,2026-10-19,applied,Product Manager,Jack Wright,M00882
+,low,2026-09-22,Dana Cole,2026-09-22,applied,Data Analyst,Paul Davis,M04270
+,medium,2026-09-22,Sam Reed,2026-09-22,applied,Data Analyst,Henry Davis,M04237
+,high,2026-09-22,Marcus Lee,2026-10-19,applied,Sales Rep,Yara Wright,M00900
+,high,2026-09-20,Dana Cole,2026-10-17,interview,QA Engineer,Leo Alo,M02317
+,medium,2026-09-20,Dana Cole,2026-09-20,interview,Data Analyst,Steve Reyes,M00827
+,high,2026-09-20,Jon Ortiz,2026-10-17,interview,Backend Engineer,Olivia Davis,M01785
+,high,2026-09-20,Sam Reed,2026-10-17,interview,Backend Engineer,Frank Novak,M02683
+,high,2026-09-23,Priya Nair,2026-09-23,offer,Backend Engineer,Frank Park,M04067
+,medium,2026-09-22,Marcus Lee,2026-10-19,screening,Sales Rep,Alice Garcia,M00446
+,high,2026-09-20,Dana Cole,2026-09-20,interview,Backend Engineer,Uma Johnson,M00936
+,medium,2026-09-21,Marcus Lee,2026-09-21,final_interview,Data Analyst,Rachel Smith,M02261
+,low,2026-09-21,Dana Cole,2026-10-18,final_interview,Data Analyst,Irene Cho,M03946
+,medium,2026-09-21,Priya Nair,2026-10-18,final_interview,Backend Engineer,Paul Brooks,M04006
+,medium,2026-09-22,Dana Cole,2026-09-22,screening,Recruiter Ops,Noah Novak,M00901
+,low,2026-09-23,Marcus Lee,2026-09-23,offer,Designer,Xander White,M02663
+,high,2026-09-20,Sam Reed,2026-10-17,interview,Software Engineer,Karen Davis,M02350
+,high,2026-09-20,Marcus Lee,2026-09-20,interview,Designer,Grace Daniels,M03238
+,high,2026-09-23,Sam Reed,2026-10-20,offer,Software Engineer,Alice Wright,M02097
+,medium,2026-09-20,Marcus Lee,2026-10-17,interview,Product Manager,David Lee,M00121
+,medium,2026-09-22,Jon Ortiz,2026-10-19,applied,Product Manager,Frank Reyes,M00193
+,high,2026-09-23,Marcus Lee,2026-09-23,offer,Recruiter Ops,Paul Reyes,M00201
+,high,2026-09-22,Marcus Lee,2026-09-22,applied,Backend Engineer,Zoe Johnson,M03950

@@ -1,0 +1,10 @@
+=== header_capitalized.csv ===
+elapsed_s: 0.43789149999793153
+returncode: 1
+timed_out: False
+--- stdout ---
+
+--- stderr ---
+Error: CSV is missing required column(s): stage
+Columns found in the file: candidate_id, candidate_name, role, Stage, stage_entered_date, owner, last_contact_date, role_priority, notes
+  'stage' not found - did you mean 'Stage'?
