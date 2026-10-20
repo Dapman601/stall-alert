@@ -276,3 +276,20 @@ visible rather than silently absorbed:
   — so **it is not known** whether either of those two fallbacks was
   caused by Fix 3's new first-word check or was an ordinary cause; that
   data no longer exists and would require a fresh run to find out.
+- **`deadline_allowed` removed the model's only way to signal urgency
+  for a reason it can't see (Day 4 part 2 eval, case E011).**
+  `deadline_allowed` is computed purely from `days_over_threshold >=
+  threshold` — elapsed time vs. the configured threshold, nothing else.
+  A candidate with a competing offer (E011) is only 3 business days
+  over a 5-day `interview` threshold, so `deadline_allowed` is `False`
+  and the model is barred from including any deadline phrasing at all,
+  even though the note describes a genuinely time-sensitive situation
+  that elapsed time alone doesn't capture. Before this change, the
+  model could (and did, under v3) write "within 3 business days given
+  competing offer" — which the eval graded as the better response on
+  content, despite v3 failing on the (now-fixed) unconditional-deadline
+  bug for *other* cases. `final` instead wrote "Follow up on competing
+  offer status and timeline," which is correct but has no way to
+  convey urgency once a deadline phrase is off the table. Fixing this
+  would mean giving `deadline_allowed` (or a separate urgency signal)
+  visibility into note content, not just elapsed time — not done here.
