@@ -66,8 +66,8 @@ class FakeClient:
         return FakeClient._Chat(self)
 
 
-def _respond(action, who, reason):
-    return json.dumps({"action": action, "who": who, "reason": reason})
+def _respond(action, waiting_on, reason):
+    return json.dumps({"action": action, "waiting_on": waiting_on, "reason": reason})
 
 
 # --- the happy path: ordinary words must always pass ---
@@ -76,14 +76,14 @@ def test_valid_ordinary_response_passes_validation():
     ctx = make_ctx()
     text = _respond(
         action="Schedule a quick check-in call this week to confirm next steps.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has been in the applied stage longer than expected.",
     )
     client = FakeClient(text=text)
     result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
     assert result.source == "ai"
     assert result.fallback_reason is None
-    assert result.who == "recruiter"
+    assert result.waiting_on == "recruiter"
 
 
 # --- role/stage words from the row itself are not invented names ---
@@ -92,7 +92,7 @@ def test_role_word_in_action_is_not_flagged_as_invented_name():
     ctx = make_ctx(row=make_row(role="Engineer"))
     text = _respond(
         action="Ask the Engineer candidate to confirm interest in the role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Confirm interest to keep the applied stage moving.",
     )
     client = FakeClient(text=text)
@@ -107,7 +107,7 @@ def test_markdown_fenced_json_is_still_parsed():
     ctx = make_ctx()
     inner = _respond(
         action="Schedule a quick check-in call this week to confirm next steps.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has been in the applied stage longer than expected.",
     )
     text = f"```json\n{inner}\n```"
@@ -132,7 +132,7 @@ def test_invalid_json_falls_back():
 def test_overlong_action_falls_back():
     ctx = make_ctx()
     long_action = " ".join(["word"] * 30)
-    text = _respond(action=long_action, who="recruiter", reason="too long test")
+    text = _respond(action=long_action, waiting_on="recruiter", reason="too long test")
     client = FakeClient(text=text)
     result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
     assert result.source == "fallback"
@@ -146,7 +146,7 @@ def test_overlong_reason_falls_back():
     long_reason = " ".join(["word"] * 25)
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason=long_reason,
     )
     client = FakeClient(text=text)
@@ -160,7 +160,7 @@ def test_reason_at_exactly_20_words_passes():
     reason = " ".join(["word"] * 20)
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason=reason,
     )
     client = FakeClient(text=text)
@@ -174,7 +174,7 @@ def test_invented_person_name_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Email Jennifer Walsh to confirm interview availability this week.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Need a faster response from the candidate.",
     )
     client = FakeClient(text=text)
@@ -189,7 +189,7 @@ def test_invented_number_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Offer a 15% signing bonus to close the candidate quickly.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Faster close increases the chance of acceptance.",
     )
     client = FakeClient(text=text)
@@ -204,7 +204,7 @@ def test_invented_date_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Schedule the next interview for 2026-12-01 at the latest.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate should not wait longer than that.",
     )
     client = FakeClient(text=text)
@@ -220,7 +220,7 @@ def test_month_day_format_of_a_real_row_date_passes():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the role this week.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate entered the applied stage on Oct 12.",
     )
     client = FakeClient(text=text)
@@ -233,7 +233,7 @@ def test_full_month_name_day_first_format_of_a_real_row_date_passes():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the role this week.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="No contact since 13 October.",
     )
     client = FakeClient(text=text)
@@ -246,7 +246,7 @@ def test_bare_ordinal_matching_a_real_row_day_passes():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the role this week.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate entered the stage on the 12th.",
     )
     client = FakeClient(text=text)
@@ -258,7 +258,7 @@ def test_month_day_not_matching_any_row_date_still_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the role this week.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="No contact since October 25.",
     )
     client = FakeClient(text=text)
@@ -285,7 +285,7 @@ def test_real_fallback_oct5_now_passes():
     ctx = make_ctx(row=row, days_in_stage=10, threshold=3, days_over_threshold=7)
     text = _respond(
         action="Contact Victor Hugo to schedule technical screening or next step.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="7 days overdue, no recent contact since Oct 5.",
     )
     client = FakeClient(text=text)
@@ -301,7 +301,7 @@ def test_invented_name_as_first_word_of_action_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Jennifer should follow up with the candidate this week.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has been stalled too long in the applied stage.",
     )
     client = FakeClient(text=text)
@@ -317,7 +317,7 @@ def test_invented_name_as_first_word_of_reason_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Marcus should flag this candidate as a priority.",
     )
     client = FakeClient(text=text)
@@ -338,7 +338,7 @@ def test_real_sentence_starter_complete_still_passes():
     ctx = make_ctx(row=row, days_in_stage=4, threshold=3, days_over_threshold=1)
     text = _respond(
         action="Complete screening call with David Kim today or tomorrow.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="1 day past threshold in screening stage.",
     )
     client = FakeClient(text=text)
@@ -355,7 +355,7 @@ def test_real_sentence_starter_high_priority_still_passes():
     ctx = make_ctx(row=row, days_in_stage=4, threshold=3, days_over_threshold=1)
     text = _respond(
         action="Review Alice Johnson's application and advance to phone screen or reject.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="High priority role, exceeded 3-day applied stage threshold.",
     )
     client = FakeClient(text=text)
@@ -363,19 +363,34 @@ def test_real_sentence_starter_high_priority_still_passes():
     assert result.source == "ai"
 
 
-# --- invalid 'who' enum falls back ---
+# --- invalid 'waiting_on' enum falls back ---
 
-def test_invalid_who_enum_falls_back():
+def test_invalid_waiting_on_enum_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="hr_team",
+        waiting_on="hr_team",
         reason="Keep the process moving.",
     )
     client = FakeClient(text=text)
     result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
     assert result.source == "fallback"
-    assert "who" in result.fallback_reason
+    assert "waiting_on" in result.fallback_reason
+
+
+def test_invalid_waiting_on_owner_now_rejected():
+    # Day 4 part 2: 'owner' was valid under the old 'who' schema but is
+    # NOT a valid waiting_on value - the field dropped it entirely.
+    ctx = make_ctx()
+    text = _respond(
+        action="Follow up with the candidate about the applied role.",
+        waiting_on="owner",
+        reason="Keep the process moving.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    assert result.source == "fallback"
+    assert "waiting_on" in result.fallback_reason
 
 
 # --- API error falls back and is distinguished from validation errors ---
@@ -425,7 +440,7 @@ def test_response_citing_real_days_over_threshold_passes():
     ctx = make_ctx(row=row, days_in_stage=11, threshold=4, days_over_threshold=7)
     text = _respond(
         action="Schedule the final interview with Yara Singh this week.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is 7 days over the final_interview threshold of 4.",
     )
     client = FakeClient(text=text)
@@ -453,7 +468,7 @@ def test_real_fallback_with_fabricated_duration_still_falls_back():
     text = _respond(
         action="Schedule final interview immediately with Sam Reed to close "
         "high-priority Recruiter Ops role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate waiting at final stage for 2+ months on high-priority role.",
     )
     client = FakeClient(text=text)
@@ -471,7 +486,7 @@ def test_number_word_matching_context_passes():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is one day over the applied stage threshold.",
     )
     client = FakeClient(text=text)
@@ -487,7 +502,7 @@ def test_number_word_not_matching_context_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is one of fifteen applicants under review for this role.",
     )
     client = FakeClient(text=text)
@@ -503,7 +518,7 @@ def test_number_word_days_duration_not_matching_context_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has been stalled for fifteen days without contact.",
     )
     client = FakeClient(text=text)
@@ -520,7 +535,7 @@ def test_vague_quantity_word_in_duration_always_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has been waiting a couple of weeks for a response.",
     )
     client = FakeClient(text=text)
@@ -536,7 +551,7 @@ def test_month_duration_not_matching_context_falls_back():
     ctx = make_ctx(days_in_stage=6, threshold=5, days_over_threshold=1)
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has been waiting three months for a response.",
     )
     client = FakeClient(text=text)
@@ -563,7 +578,7 @@ def test_meaning_mismatch_months_vs_day_based_threshold_not_caught():
     ctx = make_ctx(row=row, days_in_stage=5, threshold=2, days_over_threshold=3)
     text = _respond(
         action="Follow up with the candidate about the offer status.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has been 2 months in stage, significantly delayed.",
     )
     client = FakeClient(text=text)
@@ -581,7 +596,7 @@ def test_vague_quantity_some_outside_duration_passes():
     ctx = make_ctx()
     text = _respond(
         action="Follow up and answer some of the candidate's questions.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate raised questions during the applied stage.",
     )
     client = FakeClient(text=text)
@@ -593,7 +608,7 @@ def test_vague_quantity_a_few_outside_duration_passes():
     ctx = make_ctx()
     text = _respond(
         action="Follow up and address a few concerns before the next interview.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate raised concerns during the applied stage.",
     )
     client = FakeClient(text=text)
@@ -608,7 +623,7 @@ def test_vague_quantity_a_few_weeks_duration_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has stalled for a few weeks with no response.",
     )
     client = FakeClient(text=text)
@@ -621,7 +636,7 @@ def test_vague_quantity_several_months_duration_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has been several months in stage with no update.",
     )
     client = FakeClient(text=text)
@@ -637,7 +652,7 @@ def test_vague_quantity_a_few_days_duration_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate has been overdue for a few days with no contact.",
     )
     client = FakeClient(text=text)
@@ -650,7 +665,7 @@ def test_vague_quantity_several_hours_duration_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate within several hours.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is high priority and needs a prompt response.",
     )
     client = FakeClient(text=text)
@@ -679,7 +694,7 @@ def test_deadline_within_2_days_in_action_passes():
     ctx = make_ctx(row=row, days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Review Alice Johnson's application and schedule phone screen within 2 days.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="High priority role, 3 days over threshold at applied stage.",
     )
     client = FakeClient(text=text)
@@ -700,7 +715,7 @@ def test_deadline_within_10_days_in_action_falls_back():
     )
     text = _respond(
         action="Follow up with the candidate within 10 days.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is high priority for the applied role.",
     )
     client = FakeClient(text=text)
@@ -717,7 +732,7 @@ def test_deadline_within_2_days_in_reason_falls_back():
     ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate should respond within 2 days or be deprioritized.",
     )
     client = FakeClient(text=text)
@@ -730,7 +745,7 @@ def test_deadline_within_two_days_number_word_in_action_passes():
     ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Follow up with the candidate within two days.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is high priority for the applied role.",
     )
     client = FakeClient(text=text)
@@ -742,7 +757,7 @@ def test_deadline_within_3_business_days_in_action_passes():
     ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Follow up with the candidate within 3 business days.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is high priority for the applied role.",
     )
     client = FakeClient(text=text)
@@ -754,7 +769,7 @@ def test_deadline_within_48_hours_in_action_passes():
     ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Contact the candidate within 48 hours.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is high priority for the applied role.",
     )
     client = FakeClient(text=text)
@@ -766,7 +781,7 @@ def test_deadline_within_60_hours_in_action_falls_back():
     ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Contact the candidate within 60 hours.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is high priority for the applied role.",
     )
     client = FakeClient(text=text)
@@ -796,7 +811,7 @@ def test_deadline_in_bound_rejected_when_deadline_not_allowed():
     ctx = make_ctx(days_in_stage=4, threshold=3, days_over_threshold=1)
     text = _respond(
         action="Follow up with the candidate within 2 days.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is high priority for the applied role.",
     )
     client = FakeClient(text=text)
@@ -826,7 +841,7 @@ def test_sentence_initial_unknown_verb_collect_passes():
     ctx = make_ctx(row=row, days_in_stage=7, threshold=4, days_over_threshold=3)
     text = _respond(
         action="Collect final interview feedback and make a hiring decision.",
-        who="hiring_manager",
+        waiting_on="hiring_manager",
         reason="Three business days over threshold at final interview stage.",
     )
     client = FakeClient(text=text)
@@ -838,7 +853,7 @@ def test_sentence_initial_unknown_verb_gather_passes():
     ctx = make_ctx()
     text = _respond(
         action="Gather feedback from the hiring manager about this candidate.",
-        who="hiring_manager",
+        waiting_on="hiring_manager",
         reason="Candidate is past the applied stage threshold.",
     )
     client = FakeClient(text=text)
@@ -850,7 +865,7 @@ def test_sentence_initial_unknown_verb_escalate_passes():
     ctx = make_ctx()
     text = _respond(
         action="Escalate this candidate's feedback to the hiring manager.",
-        who="hiring_manager",
+        waiting_on="hiring_manager",
         reason="Candidate is past the applied stage threshold.",
     )
     client = FakeClient(text=text)
@@ -862,7 +877,7 @@ def test_two_word_invented_name_at_sentence_start_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Tunde Bello should email the candidate about next steps.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is past the applied stage threshold.",
     )
     client = FakeClient(text=text)
@@ -875,7 +890,7 @@ def test_single_invented_name_followed_by_should_falls_back():
     ctx = make_ctx()
     text = _respond(
         action="Tunde should email the candidate about next steps.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is past the applied stage threshold.",
     )
     client = FakeClient(text=text)
@@ -892,7 +907,7 @@ def test_real_candidate_name_right_after_sentence_initial_verb_passes():
     ctx = make_ctx(row=row)
     text = _respond(
         action="Review Alice Johnson's application and advance or reject.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Candidate is past the applied stage threshold.",
     )
     client = FakeClient(text=text)
@@ -913,7 +928,7 @@ def test_single_invented_name_without_trigger_word_not_caught():
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
-        who="recruiter",
+        waiting_on="recruiter",
         reason="Marcus flagged this candidate as a priority last week.",
     )
     client = FakeClient(text=text)
@@ -921,3 +936,38 @@ def test_single_invented_name_without_trigger_word_not_caught():
     # This SHOULD fall back ("Marcus" is invented), but the narrowed
     # heuristic has no trigger here, so it incorrectly passes as "ai".
     assert result.source == "fallback"
+
+
+# --- Day 4 part 2: rule_based_action's waiting_on defaults by stage,
+# mirroring the directive's own guidance, instead of one hardcoded value. ---
+
+def test_fallback_waiting_on_defaults_to_hiring_manager_at_final_interview():
+    row = make_row(stage="final_interview")
+    result = ai_actions.rule_based_action(row, "test reason")
+    assert result.waiting_on == "hiring_manager"
+
+
+def test_fallback_waiting_on_defaults_to_candidate_at_offer():
+    row = make_row(stage="offer")
+    result = ai_actions.rule_based_action(row, "test reason")
+    assert result.waiting_on == "candidate"
+
+
+def test_fallback_waiting_on_defaults_to_recruiter_at_applied():
+    row = make_row(stage="applied")
+    result = ai_actions.rule_based_action(row, "test reason")
+    assert result.waiting_on == "recruiter"
+
+
+def test_fallback_waiting_on_defaults_to_recruiter_at_screening():
+    row = make_row(stage="screening")
+    result = ai_actions.rule_based_action(row, "test reason")
+    assert result.waiting_on == "recruiter"
+
+
+def test_fallback_waiting_on_handles_normalized_stage_variants():
+    # "Final Interview" (spaces/capitalization) must normalize the same
+    # way as "final_interview" - mirrors core.normalize_stage.
+    row = make_row(stage="Final Interview")
+    result = ai_actions.rule_based_action(row, "test reason")
+    assert result.waiting_on == "hiring_manager"

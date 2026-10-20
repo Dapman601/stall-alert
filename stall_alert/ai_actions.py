@@ -14,9 +14,20 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Any, Optional
 
+from stall_alert.core import normalize_stage
 from stall_alert.loader import Row
 
-ALLOWED_WHO = {"recruiter", "hiring_manager", "owner"}
+ALLOWED_WAITING_ON = {"candidate", "hiring_manager", "recruiter"}
+
+# Day 4 part 2: stage-based default for the fallback template, mirroring
+# the directive's own waiting_on guidance - final_interview normally
+# waits on the hiring manager, offer normally waits on the candidate,
+# everything else (applied/screening/interview) normally waits on the
+# recruiter to act/schedule/decide.
+_FALLBACK_WAITING_ON_BY_STAGE = {
+    "final_interview": "hiring_manager",
+    "offer": "candidate",
+}
 MAX_ACTION_WORDS = 25
 MAX_REASON_WORDS = 20  # matches directive.md's stated limit for 'reason'
 
@@ -180,7 +191,7 @@ class ModelContext:
 @dataclass(frozen=True)
 class ActionResult:
     action: str
-    who: str
+    waiting_on: str  # Day 4 part 2: who the candidate's progress is blocked on - candidate/hiring_manager/recruiter (not who should act)
     reason: str
     source: str  # "ai" or "fallback"
     fallback_reason: Optional[str] = None  # None when source == "ai"
@@ -438,13 +449,15 @@ def validate_ai_response(
         raise ValidationError("response is not a JSON object")
 
     action = parsed.get("action")
-    who = parsed.get("who")
+    waiting_on = parsed.get("waiting_on")
     reason = parsed.get("reason")
 
     if not isinstance(action, str) or not action.strip():
         raise ValidationError("missing or invalid 'action'")
-    if not isinstance(who, str) or who not in ALLOWED_WHO:
-        raise ValidationError(f"'who' must be one of {sorted(ALLOWED_WHO)}")
+    if not isinstance(waiting_on, str) or waiting_on not in ALLOWED_WAITING_ON:
+        raise ValidationError(
+            f"'waiting_on' must be one of {sorted(ALLOWED_WAITING_ON)}"
+        )
     if not isinstance(reason, str) or not reason.strip():
         raise ValidationError("missing or invalid 'reason'")
 
@@ -465,7 +478,7 @@ def validate_ai_response(
 
     return ActionResult(
         action=action.strip(),
-        who=who,
+        waiting_on=waiting_on,
         reason=reason.strip(),
         source="ai",
         raw_response=raw_response,
@@ -499,10 +512,17 @@ def rule_based_action(
     only from the row's own fields, so it never needs content
     validation itself. `fallback_reason` records why we're here;
     `raw_response` is the model's exact text when one was received
-    (None for API errors or --no-ai, where no response text exists)."""
+    (None for API errors or --no-ai, where no response text exists).
+    `waiting_on` defaults by stage, mirroring the directive's own
+    guidance, rather than a single hardcoded value - the fallback
+    can't reason about the note, but the stage alone is still a
+    reasonable signal."""
+    waiting_on = _FALLBACK_WAITING_ON_BY_STAGE.get(
+        normalize_stage(row.stage), "recruiter"
+    )
     return ActionResult(
         action=f"{row.owner} should contact {row.candidate_name} for a status update.",
-        who="owner",
+        waiting_on=waiting_on,
         reason="Fallback action: no valid AI suggestion was available.",
         source="fallback",
         fallback_reason=fallback_reason,

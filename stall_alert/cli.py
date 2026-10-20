@@ -143,7 +143,8 @@ _FALLBACK_CAUSES = [
     ("flagged_duration", "invented duration"),
     ("flagged_name", "possible invented name"),
     ("overlong_action", "more than"),
-    ("invalid_who", "'who' must be"),
+    ("invalid_waiting_on", "'waiting_on' must be"),
+    ("invalid_deadline", "deadline not allowed"),
     ("missing_or_invalid_field", "missing or invalid"),
     ("ai_disabled", "--no-ai"),
 ]
@@ -251,7 +252,7 @@ def _ranked_to_dict(rc: RankedCandidate, actions: dict) -> dict:
             f"{rc.priority_weight} = {rc.score}"
         ),
         "action": action.action if action else None,
-        "who": action.who if action else None,
+        "waiting_on": action.waiting_on if action else None,
         "action_source": action.source if action else None,
         "fallback_reason": action.fallback_reason if action else None,
         "raw_response": action.raw_response if action else None,
@@ -289,7 +290,7 @@ def _render_table(today, bad_rows, warnings, on_hold, ranked, actions) -> str:
             f"(threshold {d['threshold']})"
         )
         lines.append(f"   breakdown: {d['score_breakdown']}")
-        action_line = f"   action [{d['action_source']}] -> {d['who']}: {d['action']}"
+        action_line = f"   action [{d['action_source']}] -> waiting_on={d['waiting_on']}: {d['action']}"
         if d["fallback_reason"]:
             action_line += f" (fallback reason: {d['fallback_reason']})"
         lines.append(action_line)
@@ -318,7 +319,7 @@ def _render_md(today, bad_rows, warnings, on_hold, ranked, actions) -> str:
     lines.append(f"## Stalled candidates, ranked ({len(ranked)})")
     lines.append(
         "| Rank | Candidate | Role / Stage | Days in stage | Threshold | "
-        "Breakdown | Score | Action | Who | Source | Fallback reason | Raw response |"
+        "Breakdown | Score | Action | Waiting on | Source | Fallback reason | Raw response |"
     )
     lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|")
     for i, rc in enumerate(ranked, start=1):
@@ -327,7 +328,7 @@ def _render_md(today, bad_rows, warnings, on_hold, ranked, actions) -> str:
         lines.append(
             f"| {i} | {d['candidate_name']} ({d['candidate_id']}) | "
             f"{d['role']} / {d['stage']} | {d['days_in_stage']} | {d['threshold']} | "
-            f"{d['score_breakdown']} | {d['score']} | {d['action']} | {d['who']} | "
+            f"{d['score_breakdown']} | {d['score']} | {d['action']} | {d['waiting_on']} | "
             f"{d['action_source']} | {d['fallback_reason'] or ''} | {raw} |"
         )
     return "\n".join(lines)
