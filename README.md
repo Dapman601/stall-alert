@@ -130,7 +130,15 @@ of guessed silently:
 6. If the CSV header is missing a required column entirely, that's a
    fatal error (the tool exits), not a per-row bad row, since it would
    affect every row identically.
-7. "on hold" detection is a case-insensitive substring match on `notes`.
+7. **(Day 4)** "on hold" detection matches `on hold`/`on-hold`/`onhold` in
+   `notes` (any case, word-boundaries - so it won't match inside a longer
+   word), but NOT negated forms: `no longer on hold`, `off hold`, `taken
+   off hold`. `hold off` is deliberately **not** treated as on-hold - the
+   match is kept narrow on purpose, so that if a note is ambiguous the
+   candidate stays visible in the stalled list rather than being silently
+   hidden. (Day 3 found the original plain-substring match on `"on hold"`
+   missed the hyphen/no-space forms and incorrectly caught `"no longer on
+   hold"`; see `reports/day3_breaks.md` and `reports/day4_fix1_onhold_run.txt`.)
 8. Terminal-stage matching is case-insensitive and normalized the same
    way stage names are (spaces/hyphens -> underscores) before comparing
    to `hired`/`rejected`/`withdrawn`.
@@ -215,6 +223,18 @@ of guessed silently:
     "within"), is checked exactly as before. This exemption **never**
     applies to `reason` — every number there must still come from the
     row/context, with no exceptions.
+22. **(Day 4)** CSV encoding: the loader tries UTF-8 first. If that
+    fails, it falls back to `cp1252` automatically and prints a visible
+    warning (`Warning: File isn't UTF-8; read as cp1252. If names look
+    wrong, rerun with --encoding <name>.`) rather than crashing with a
+    raw traceback (Day 3 found the hardcoded `utf-8-sig` decode crashed
+    the whole file on any non-UTF-8 byte). `--encoding <name>` overrides
+    detection entirely; if decoding still fails with an explicit
+    `--encoding`, that's a clear `Error:` message, not a traceback.
+    cp1252 can't represent every Unicode character (e.g. Vietnamese/
+    Yoruba tone marks, CJK) - those characters are replaced with `?` on
+    the fallback path, which is a real, visible data-quality cost of
+    the fallback, not a bug.
 
 ## Known Limitations
 

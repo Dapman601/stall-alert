@@ -48,6 +48,12 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
         help="Print an AI fallback-rate summary (stalled/ai/fallback counts, "
         "fallback rate, and fallback reasons grouped by cause)",
     )
+    parser.add_argument(
+        "--encoding",
+        default=None,
+        help="Encoding to read the CSV as (e.g. cp1252). Default: try UTF-8, "
+        "falling back to cp1252 with a warning if that fails.",
+    )
     return parser.parse_args(argv)
 
 
@@ -66,8 +72,15 @@ class CombinedBadRow:
 def run(argv: Optional[list[str]] = None) -> int:
     args = parse_args(argv)
     today = resolve_today(args.today)
-    config = load_config(args.config)
-    load_result = load_rows(args.board_csv, today)
+    try:
+        config = load_config(args.config)
+        load_result = load_rows(args.board_csv, today, encoding=args.encoding)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+    if load_result.encoding_warning:
+        print(f"Warning: {load_result.encoding_warning}")
 
     bad_rows: list[CombinedBadRow] = [
         CombinedBadRow(e.row_number, e.reason) for e in load_result.errors

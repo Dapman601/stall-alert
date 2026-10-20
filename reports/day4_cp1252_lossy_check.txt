@@ -1,0 +1,6 @@
+Lossy rows in manifest: 20
+M04982: candidate_name='Ngozi ?k?nkw?'
+M04997: candidate_name='??'
+M04983: candidate_name='Ngozi ?k?nkw?'
+M04998: candidate_name='??'
+M04999: candidate_name='??'

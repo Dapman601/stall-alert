@@ -5,6 +5,7 @@ No AI, no network calls. Everything here is pure and fully testable.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import date, timedelta
 from enum import Enum
@@ -13,6 +14,16 @@ from typing import Optional
 import yaml
 
 from stall_alert.loader import Row
+
+# Day 4: match "on hold"/"on-hold"/"onhold" (any case, word boundaries),
+# but not negated forms ("no longer on hold", "off hold", "taken off
+# hold"). "hold off" never matches the positive pattern at all (no "on"
+# before "hold"). When in doubt, the candidate stays in the stalled
+# list rather than being hidden as on-hold - see README Assumptions.
+_ON_HOLD_PATTERN = re.compile(r"\bon[ -]?hold\b", re.IGNORECASE)
+_ON_HOLD_NEGATION_PATTERN = re.compile(
+    r"\bno longer\s+on[ -]?hold\b|\boff[ -]?hold\b", re.IGNORECASE
+)
 
 
 @dataclass(frozen=True)
@@ -41,7 +52,9 @@ def normalize_stage(stage: str) -> str:
 
 
 def is_on_hold(notes: str) -> bool:
-    return "on hold" in notes.lower()
+    if _ON_HOLD_NEGATION_PATTERN.search(notes):
+        return False
+    return bool(_ON_HOLD_PATTERN.search(notes))
 
 
 def _roll_to_business_day(d: date) -> date:

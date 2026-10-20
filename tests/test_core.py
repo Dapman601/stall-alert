@@ -84,6 +84,45 @@ def test_is_on_hold_case_insensitive_substring():
     assert not is_on_hold("holding steady, no issues")
 
 
+# --- Day 4 fix: on-hold variants, built from the exact note strings
+# planted in Day 3's messy_board.csv (data/messy_manifest.csv
+# defect "on_hold_variant:*") ---
+
+def test_on_hold_variant_on_hold_matches():
+    assert is_on_hold("On Hold")
+
+
+def test_on_hold_variant_hyphenated_now_matches():
+    # Day 3 finding: "on-hold" did not match before this fix.
+    assert is_on_hold("on-hold")
+
+
+def test_on_hold_variant_onhold_now_matches():
+    # Day 3 finding: "onhold" did not match before this fix.
+    assert is_on_hold("onhold")
+
+
+def test_on_hold_variant_no_longer_on_hold_now_excluded():
+    # Day 3 finding: this incorrectly matched before this fix (the hold
+    # is OVER, but the old substring check only looked for "on hold").
+    assert not is_on_hold("no longer on hold")
+
+
+def test_on_hold_variant_hold_off_is_not_on_hold():
+    # Explicit decision: "hold off" is not treated as on-hold - keep
+    # the match narrow; when in doubt, leave the candidate stalled and
+    # visible rather than hidden.
+    assert not is_on_hold("hold off")
+
+
+def test_on_hold_variant_off_hold_is_not_on_hold():
+    assert not is_on_hold("off hold")
+
+
+def test_on_hold_variant_taken_off_hold_is_not_on_hold():
+    assert not is_on_hold("taken off hold")
+
+
 # --- evaluate_candidate: thresholds ---
 
 def test_exactly_at_threshold_is_not_stalled():
