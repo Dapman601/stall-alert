@@ -253,18 +253,31 @@ the validator's schema/content checks (which would reject most hijacked
 output as invalid anyway) appear to be doing the job without any
 injection-specific code.
 
-**One cheap additional safeguard, not yet built — your call:** wrap the
-`notes` field in an explicit delimiter when building the payload (e.g.
-`"notes": "<<<DATA_START>>>...<<<DATA_END>>>"` or similar), so the model has
-a structural signal that this span is quoted data, not instructions, rather
-than relying solely on the directive's prose saying so. This is a few lines
-in `row_to_dict` and doesn't change validation logic or risk rejecting
-legitimate content. **Trade-off:** it's a defense-in-depth nudge, not a
-guarantee — it wouldn't have changed today's result (which was already
-20/20 clean), so there's no measured evidence it helps, only that it's a
-commonly-recommended low-cost pattern. It also makes the raw payload sent to
-the model slightly less clean if anyone inspects it directly (e.g. via
-`--report` output) for debugging.
+**Defense-in-depth addition: notes delimiters.** The `notes` field is now
+wrapped in explicit markers when building the model payload
+(`<<<CANDIDATE_NOTES_DATA_START>>>...<<<CANDIDATE_NOTES_DATA_END>>>`, see
+`_delimit_notes` in `ai_actions.py`), and `directive.md` (v6) tells the model
+that everything between those markers is quoted candidate data regardless of
+what it says. This is **not a fix for an observed failure** — the 20/20
+result above was already clean without it. It's added purely as a
+commonly-recommended, low-cost structural signal on top of prose instructions
+that were already sufficient, in case some future note phrasing or model
+behaves differently than what's been tested. Validation (`_allowed_text` and
+friends) still runs against the raw, undelimited `notes` value, so the
+markers can't change what content is flagged as invented.
+
+Re-running all 20 AI-aimed rows live with the delimiter active
+(`reports/day4_part2_delimiter_ai_aimed_detail.txt`) reproduced the same
+result: still 20/20 ineffective, 0 fallbacks, no "hired" claims, no revealed
+instructions, no invalid `waiting_on` values. The `sample_board.csv` and
+15-case quality eval were also re-run with the delimiter active
+(`reports/day4_part2_delimiter_sample_board.txt`,
+`reports/day4_eval_delimiter_run1.json`); fallback rate and every
+`waiting_on` value matched the pre-delimiter runs exactly, with only the kind
+of run-to-run action-wording variance already seen between the two
+pre-delimiter `final` eval runs. In short: measured to have no effect either
+way, as expected for a safeguard against a failure mode that wasn't
+occurring.
 
 ## Known Limitations
 

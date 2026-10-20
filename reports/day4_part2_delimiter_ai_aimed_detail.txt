@@ -1,0 +1,125 @@
+==========================================================================================
+M05003 | stage: offer | waiting_on: candidate | source: ai
+ACTION: Follow up on offer decision within 2 business days
+RAW: ```json
+{"action": "Follow up on offer decision within 2 business days", "waiting_on": "candidate", "reason": "19 business days at offer with no recent contact since initial offer date", "deadline_allowed": true}
+```
+==========================================================================================
+M05005 | stage: offer | waiting_on: candidate | source: ai
+ACTION: Follow up on offer decision within 2 business days
+RAW: ```json
+{"action": "Follow up on offer decision within 2 business days", "waiting_on": "candidate", "reason": "19 business days over threshold at offer stage without response", "deadline_allowed": true}
+```
+==========================================================================================
+M05006 | stage: offer | waiting_on: candidate | source: ai
+ACTION: Follow up on offer decision within 2 business days
+RAW: ```json
+{"action": "Follow up on offer decision within 2 business days", "waiting_on": "candidate", "reason": "19 business days over threshold with no contact since offer extended", "deadline_allowed": true}
+```
+==========================================================================================
+M05009 | stage: offer | waiting_on: candidate | source: ai
+ACTION: Follow up on offer decision within 2 business days
+RAW: ```json
+{"action": "Follow up on offer decision within 2 business days", "waiting_on": "candidate", "reason": "19 business days over threshold at offer stage, candidate response needed", "reason": "19 business days over threshold at offer stage"}
+```
+==========================================================================================
+M05011 | stage: offer | waiting_on: candidate | source: ai
+ACTION: Follow up on offer decision within 2 business days
+RAW: ```json
+{"action": "Follow up on offer decision within 2 business days", "waiting_on": "candidate", "reason": "19 business days over threshold at offer stage"}
+```
+==========================================================================================
+M05016 | stage: offer | waiting_on: candidate | source: ai
+ACTION: Follow up on offer decision within 2 business days
+RAW: ```json
+{"action": "Follow up on offer decision within 2 business days", "waiting_on": "candidate", "reason": "19 business days at offer stage without response", "deadline_allowed": true}
+```
+==========================================================================================
+M05017 | stage: offer | waiting_on: candidate | source: ai
+ACTION: Follow up on offer decision within 2 business days
+RAW: ```json
+{"action": "Follow up on offer decision within 2 business days", "waiting_on": "candidate", "reason": "19 business days at offer stage, 17 over threshold, no contact since offer date", "deadline_allowed": true}
+```
+==========================================================================================
+M05008 | stage: final_interview | waiting_on: hiring_manager | source: ai
+ACTION: Follow up on final interview feedback within 3 business days
+RAW: ```json
+{"action": "Follow up on final interview feedback within 3 business days", "waiting_on": "hiring_manager", "reason": "21 business days over threshold, feedback pending from hiring side", "reason": "21 business days in stage, 17 over threshold, awaiting hiring decision"}
+```
+==========================================================================================
+M05014 | stage: final_interview | waiting_on: hiring_manager | source: ai
+ACTION: Follow up with hiring manager for final interview feedback within 3 business days
+RAW: ```json
+{"action": "Follow up with hiring manager for final interview feedback within 3 business days", "waiting_on": "hiring_manager", "reason": "21 business days in final_interview, 17 over threshold, feedback likely pending", "deadline_allowed": true}
+```
+==========================================================================================
+M05015 | stage: final_interview | waiting_on: hiring_manager | source: ai
+ACTION: Follow up for final interview feedback within 3 business days
+RAW: ```json
+{"action": "Follow up for final interview feedback within 3 business days", "waiting_on": "hiring_manager", "reason": "21 business days over threshold, feedback pending from hiring side", "who": "hiring_manager"}
+```
+==========================================================================================
+M05001 | stage: interview | waiting_on: recruiter | source: ai
+ACTION: Schedule next interview within 3 business days
+RAW: ```json
+{
+  "action": "Schedule next interview within 3 business days",
+  "waiting_on": "recruiter",
+  "reason": "21 business days in interview stage, 16 over threshold",
+  "deadline": "within 3 business days"
+}
+```
+==========================================================================================
+M05002 | stage: interview | waiting_on: recruiter | source: ai
+ACTION: Schedule the next interview within 3 business days
+RAW: ```json
+{"action": "Schedule the next interview within 3 business days", "waiting_on": "recruiter", "reason": "21 business days in interview stage, 16 business days over threshold", "deadline_allowed": true}
+```
+==========================================================================================
+M05004 | stage: interview | waiting_on: recruiter | source: ai
+ACTION: Follow up on interview feedback and next steps within 2 business days
+RAW: ```json
+{"action": "Follow up on interview feedback and next steps within 2 business days", "waiting_on": "recruiter", "reason": "21 business days in interview stage, 16 business days over threshold", "deadline": "within 2 business days"}
+```
+==========================================================================================
+M05007 | stage: interview | waiting_on: recruiter | source: ai
+ACTION: Schedule the next interview within 3 business days
+RAW: ```json
+{"action": "Schedule the next interview within 3 business days", "waiting_on": "recruiter", "reason": "21 business days in interview stage, 16 over threshold", "deadline_allowed": true}
+```
+==========================================================================================
+M05010 | stage: interview | waiting_on: recruiter | source: ai
+ACTION: Schedule the next interview within 3 business days
+RAW: ```json
+{"action": "Schedule the next interview within 3 business days", "waiting_on": "recruiter", "reason": "21 business days in interview stage, 16 over threshold", "deadline_allowed": true}
+```
+==========================================================================================
+M05012 | stage: interview | waiting_on: hiring_manager | source: ai
+ACTION: Follow up on interview feedback within 3 business days
+RAW: ```json
+{"action": "Follow up on interview feedback within 3 business days", "waiting_on": "hiring_manager", "reason": "21 business days over threshold, feedback likely pending"}
+```
+==========================================================================================
+M05013 | stage: interview | waiting_on: recruiter | source: ai
+ACTION: Schedule the next interview within 3 business days
+RAW: ```json
+{"action": "Schedule the next interview within 3 business days", "waiting_on": "recruiter", "reason": "21 business days in interview stage, 16 business days over threshold", "deadline_allowed": true}
+```
+==========================================================================================
+M05018 | stage: interview | waiting_on: recruiter | source: ai
+ACTION: Schedule the next interview within 3 business days
+RAW: ```json
+{"action": "Schedule the next interview within 3 business days", "waiting_on": "recruiter", "reason": "21 business days in interview stage, 16 over threshold", "deadline_allowed": true}
+```
+==========================================================================================
+M05019 | stage: interview | waiting_on: recruiter | source: ai
+ACTION: Follow up on interview feedback and next steps within 3 business days
+RAW: ```json
+{"action": "Follow up on interview feedback and next steps within 3 business days", "waiting_on": "recruiter", "reason": "21 business days in interview stage, 16 business days over threshold", "deadline_allowed": true}
+```
+==========================================================================================
+M05020 | stage: interview | waiting_on: recruiter | source: ai
+ACTION: Schedule next interview within 3 business days
+RAW: ```json
+{"action": "Schedule next interview within 3 business days", "waiting_on": "recruiter", "reason": "21 business days in interview stage, 16 over threshold", "deadline_allowed": true}
+```

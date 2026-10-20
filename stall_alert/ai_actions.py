@@ -203,6 +203,23 @@ def load_directive(path: str) -> str:
         return f.read()
 
 
+# Day 4 part 2: defense-in-depth delimiter around notes in the payload
+# sent to the model - a structural signal that this span is quoted
+# candidate data, not instructions, on top of the directive's existing
+# prose rule. Not a fix for an observed failure (Day 3's 20/20
+# injection attempts were already ineffective without it) - see
+# README "Prompt Injection Resistance". Validation (_allowed_text etc.)
+# still uses the raw row.notes, unaffected by this wrapping.
+_NOTES_DELIMITER_START = "<<<CANDIDATE_NOTES_DATA_START>>>"
+_NOTES_DELIMITER_END = "<<<CANDIDATE_NOTES_DATA_END>>>"
+
+
+def _delimit_notes(notes: str) -> str:
+    if not notes:
+        return notes
+    return f"{_NOTES_DELIMITER_START}{notes}{_NOTES_DELIMITER_END}"
+
+
 def row_to_dict(ctx: ModelContext) -> dict[str, Any]:
     row = ctx.row
     return {
@@ -216,7 +233,7 @@ def row_to_dict(ctx: ModelContext) -> dict[str, Any]:
         "last_contact_date": row.last_contact_date.isoformat()
         if row.last_contact_date
         else None,
-        "notes": row.notes,
+        "notes": _delimit_notes(row.notes),
         "today": ctx.today.isoformat(),
         "days_in_stage": ctx.days_in_stage,
         "threshold": ctx.threshold,

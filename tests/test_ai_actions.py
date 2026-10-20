@@ -971,3 +971,53 @@ def test_fallback_waiting_on_handles_normalized_stage_variants():
     row = make_row(stage="Final Interview")
     result = ai_actions.rule_based_action(row, "test reason")
     assert result.waiting_on == "hiring_manager"
+
+
+# --- Day 4 part 2: notes delimiter safeguard (defense-in-depth, not a
+# fix for an observed failure - see README "Prompt Injection
+# Resistance"). Payload sent to the model wraps notes in markers;
+# validation (_allowed_text etc.) must be unaffected. ---
+
+def test_row_to_dict_wraps_nonempty_notes_in_delimiters():
+    row = make_row(notes="Hiring manager on leave.")
+    ctx = make_ctx(row=row)
+    payload = ai_actions.row_to_dict(ctx)
+    assert payload["notes"] == (
+        "<<<CANDIDATE_NOTES_DATA_START>>>Hiring manager on leave."
+        "<<<CANDIDATE_NOTES_DATA_END>>>"
+    )
+
+
+def test_row_to_dict_leaves_empty_notes_undelimited():
+    row = make_row(notes="")
+    ctx = make_ctx(row=row)
+    payload = ai_actions.row_to_dict(ctx)
+    assert payload["notes"] == ""
+
+
+def test_delimiter_does_not_affect_validation_allowed_text():
+    # The validator must keep checking against the RAW note content,
+    # not the delimited version - a word from the note should still
+    # be recognized as allowed the same way it was before this change.
+    row = make_row(candidate_name="Alice Johnson", notes="")
+    ctx = make_ctx(row=row)
+    text = _respond(
+        action="Review Alice Johnson's application for the applied role.",
+        waiting_on="recruiter",
+        reason="Candidate is over threshold in the applied stage.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    assert result.source == "ai"
+
+
+def test_delimiter_markers_are_not_specially_allowlisted():
+    # The delimiter constants must not have been (even accidentally)
+    # added to the stoplist or any allowed-name set - they're payload
+    # formatting, not content the model is supposed to reference.
+    assert "candidate_notes_data_start" not in ai_actions._COMMON_ACTION_WORDS
+    assert "candidate_notes_data_end" not in ai_actions._COMMON_ACTION_WORDS
+    row = make_row()
+    allowed = ai_actions._allowed_name_tokens(row)
+    assert "candidate_notes_data_start" not in allowed
+    assert "candidate_notes_data_end" not in allowed
