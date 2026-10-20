@@ -660,20 +660,27 @@ def test_vague_quantity_several_hours_duration_falls_back():
 
 
 # --- Day 2 wrap-up, deadline rule: "within N days/business days/hours"
-# is allowed in ACTION only, within bound, regardless of context. ---
+# is allowed in ACTION only, within bound. Day 4 part 2 adds a gate on
+# top: the bound only matters when deadline_allowed is True
+# (days_over_threshold >= threshold) - see the dedicated
+# deadline_allowed tests further below. These tests all use an
+# explicit days_over_threshold >= threshold context so they're testing
+# the bound logic, not the gate. ---
 
 def test_deadline_within_2_days_in_action_passes():
-    # Real Day 2 case: Alice Johnson's action from an actual live run.
+    # Real Day 2 case: Alice Johnson's action from an actual live run,
+    # with days_over_threshold bumped to >= threshold so
+    # deadline_allowed is True (isolating the bound check from the gate).
     row = make_row(
         candidate_id="C001", candidate_name="Alice Johnson", role="Software Engineer",
         stage="applied", stage_entered_date=date(2026, 10, 12), owner="Sam Reed",
         role_priority="high",
     )
-    ctx = make_ctx(row=row, days_in_stage=4, threshold=3, days_over_threshold=1)
+    ctx = make_ctx(row=row, days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Review Alice Johnson's application and schedule phone screen within 2 days.",
         who="recruiter",
-        reason="High priority role, already 1 day over threshold at applied stage.",
+        reason="High priority role, 3 days over threshold at applied stage.",
     )
     client = FakeClient(text=text)
     result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
@@ -688,8 +695,8 @@ def test_deadline_within_10_days_in_action_falls_back():
         stage_entered_date=date(2026, 11, 5), last_contact_date=date(2026, 11, 6)
     )
     ctx = make_ctx(
-        row=row, today=date(2026, 11, 20), days_in_stage=4, threshold=3,
-        days_over_threshold=1,
+        row=row, today=date(2026, 11, 20), days_in_stage=6, threshold=3,
+        days_over_threshold=3,
     )
     text = _respond(
         action="Follow up with the candidate within 10 days.",
@@ -705,7 +712,9 @@ def test_deadline_within_10_days_in_action_falls_back():
 def test_deadline_within_2_days_in_reason_falls_back():
     # The exemption never applies to 'reason' - every number there
     # must still come from the row/context (ctx has no "2" anywhere).
-    ctx = make_ctx(days_in_stage=4, threshold=3, days_over_threshold=1)
+    # deadline_allowed=True here too, to isolate "never applies to
+    # reason" from the separate deadline_allowed gate.
+    ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Follow up with the candidate about the applied role.",
         who="recruiter",
@@ -718,7 +727,7 @@ def test_deadline_within_2_days_in_reason_falls_back():
 
 
 def test_deadline_within_two_days_number_word_in_action_passes():
-    ctx = make_ctx()
+    ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Follow up with the candidate within two days.",
         who="recruiter",
@@ -730,7 +739,7 @@ def test_deadline_within_two_days_number_word_in_action_passes():
 
 
 def test_deadline_within_3_business_days_in_action_passes():
-    ctx = make_ctx()
+    ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Follow up with the candidate within 3 business days.",
         who="recruiter",
@@ -742,7 +751,7 @@ def test_deadline_within_3_business_days_in_action_passes():
 
 
 def test_deadline_within_48_hours_in_action_passes():
-    ctx = make_ctx()
+    ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Contact the candidate within 48 hours.",
         who="recruiter",
@@ -754,7 +763,7 @@ def test_deadline_within_48_hours_in_action_passes():
 
 
 def test_deadline_within_60_hours_in_action_falls_back():
-    ctx = make_ctx()
+    ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
     text = _respond(
         action="Contact the candidate within 60 hours.",
         who="recruiter",
@@ -764,6 +773,42 @@ def test_deadline_within_60_hours_in_action_falls_back():
     result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
     assert result.source == "fallback"
     assert "invented duration" in result.fallback_reason
+
+
+# --- Day 4 part 2: deadline_allowed is decided in code
+# (days_over_threshold >= threshold), not by the model. When False, ANY
+# "within N ..." phrase is a violation, regardless of N's bound. ---
+
+def test_deadline_allowed_property_true_at_and_above_threshold():
+    ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
+    assert ctx.deadline_allowed is True
+
+
+def test_deadline_allowed_property_false_below_threshold():
+    ctx = make_ctx(days_in_stage=4, threshold=3, days_over_threshold=1)
+    assert ctx.deadline_allowed is False
+
+
+def test_deadline_in_bound_rejected_when_deadline_not_allowed():
+    # "within 2 days" would normally pass (2 <= 5) - but
+    # days_over_threshold=1 < threshold=3, so deadline_allowed is False
+    # and it must be rejected regardless of being in-bound.
+    ctx = make_ctx(days_in_stage=4, threshold=3, days_over_threshold=1)
+    text = _respond(
+        action="Follow up with the candidate within 2 days.",
+        who="recruiter",
+        reason="Candidate is high priority for the applied role.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    assert result.source == "fallback"
+    assert "deadline not allowed" in result.fallback_reason
+
+
+def test_deadline_included_in_payload_sent_to_model():
+    ctx = make_ctx(days_in_stage=6, threshold=3, days_over_threshold=3)
+    payload = ai_actions.row_to_dict(ctx)
+    assert payload["deadline_allowed"] is True
 
 
 # --- Day 2 close-out, name check: sentence-initial words no longer

@@ -102,8 +102,21 @@ _DEADLINE_PATTERN = re.compile(
 )
 
 
-def _exempt_deadlines(text: str) -> str:
+def _exempt_deadlines(text: str, deadline_allowed: bool) -> tuple[list[str], str]:
+    """Day 4 part 2: deadline_allowed is now decided in code
+    (days_over_threshold >= threshold), not left to the model's
+    judgment. If it's False, ANY 'within N ...' phrase is a violation
+    regardless of N's bound - the candidate simply isn't far enough
+    over threshold for a deadline to be appropriate at all. If it's
+    True, the existing in-bound/out-of-bound logic applies."""
+    violations: list[str] = []
+
     def replace(m: re.Match) -> str:
+        if not deadline_allowed:
+            violations.append(
+                f"deadline not allowed (not far enough over threshold): '{m.group(0)}'"
+            )
+            return _mask(m.group(0))
         qty_text = m.group("qty").lower()
         qty_val = int(qty_text) if qty_text.isdigit() else _NUMBER_WORDS[qty_text]
         unit = m.group("unit").lower().rstrip("s")
@@ -111,7 +124,8 @@ def _exempt_deadlines(text: str) -> str:
             return _mask(m.group(0))
         return m.group(0)  # out of bound: leave as-is for the normal checks
 
-    return _DEADLINE_PATTERN.sub(replace, text)
+    working = _DEADLINE_PATTERN.sub(replace, text)
+    return violations, working
 
 
 # Day 2 close-out: a capitalized word at the very start of a sentence
@@ -154,6 +168,14 @@ class ModelContext:
     threshold: int
     days_over_threshold: int
 
+    @property
+    def deadline_allowed(self) -> bool:
+        """Day 4 part 2: the model no longer decides whether a stall is
+        'serious enough' for a deadline - that's a judgment call we can
+        compute directly from the numbers we already have. Derived, not
+        stored, so it can never drift from days_over_threshold/threshold."""
+        return self.days_over_threshold >= self.threshold
+
 
 @dataclass(frozen=True)
 class ActionResult:
@@ -188,6 +210,7 @@ def row_to_dict(ctx: ModelContext) -> dict[str, Any]:
         "days_in_stage": ctx.days_in_stage,
         "threshold": ctx.threshold,
         "days_over_threshold": ctx.days_over_threshold,
+        "deadline_allowed": ctx.deadline_allowed,
     }
 
 
@@ -336,12 +359,15 @@ def _content_violations(
     pass. The allowed sets include the computed stall context (Fix 1),
     not just the raw row, so correct day-counts/dates the model echoes
     back are not flagged. `allow_deadline=True` (action field only)
-    exempts "within N days/business days/hours" within bound - see
-    _exempt_deadlines."""
+    exempts "within N days/business days/hours" within bound, but only
+    when ctx.deadline_allowed is True - see _exempt_deadlines."""
+    violations: list[str] = []
     if allow_deadline:
-        text = _exempt_deadlines(text)
+        deadline_violations, text = _exempt_deadlines(text, ctx.deadline_allowed)
+        violations.extend(deadline_violations)
 
-    violations, working = _date_phrase_violations(text, ctx)
+    date_violations, working = _date_phrase_violations(text, ctx)
+    violations.extend(date_violations)
 
     allowed_text = _allowed_text(ctx)
     allowed_numbers = set(_NUMBER_PATTERN.findall(allowed_text))
