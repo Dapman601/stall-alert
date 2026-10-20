@@ -1,0 +1,241 @@
+stall-alert report (today = 2026-10-20)
+
+Bad rows excluded: 145
+  row 5: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 107: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 124: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 155: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 229: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 349: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 350: stage_entered_date 2026-11-12 is after --today 2026-10-20
+  row 382: missing required field 'owner'
+  row 385: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 441: missing required field 'owner'
+  row 452: stage_entered_date '2026-02-30' is not a valid %Y-%m-%d date
+  row 485: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 548: stage_entered_date '2026-02-30' is not a valid %Y-%m-%d date
+  row 552: stage_entered_date 2026-11-30 is after --today 2026-10-20
+  row 558: stage_entered_date 2026-10-26 is after --today 2026-10-20
+  row 607: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 692: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 714: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 762: stage_entered_date 2026-11-10 is after --today 2026-10-20
+  row 789: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 804: missing required field 'owner'
+  row 820: stage_entered_date 2026-12-09 is after --today 2026-10-20
+  row 837: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 953: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 958: stage_entered_date '2026-02-30' is not a valid %Y-%m-%d date
+  row 1113: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 1136: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 1169: stage_entered_date 2026-12-07 is after --today 2026-10-20
+  row 1205: missing required field 'owner'
+  row 1297: missing required field 'owner'
+  row 1313: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 1390: stage_entered_date '2026-00-10' is not a valid %Y-%m-%d date
+  row 1403: stage_entered_date '2026-00-10' is not a valid %Y-%m-%d date
+  row 1479: missing required field 'owner'
+  row 1501: stage_entered_date 2026-11-16 is after --today 2026-10-20
+  row 1542: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 1576: missing required field 'owner'
+  row 1578: stage_entered_date '2026-13-01' is not a valid %Y-%m-%d date
+  row 1619: missing required field 'owner'
+  row 1634: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 1639: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 1719: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 1743: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 1757: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 1763: stage_entered_date 2026-11-24 is after --today 2026-10-20
+  row 1794: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 1856: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 1975: stage_entered_date 2026-12-16 is after --today 2026-10-20
+  row 2088: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 2208: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 2248: stage_entered_date '2026-13-01' is not a valid %Y-%m-%d date
+  row 2251: missing required field 'owner'
+  row 2258: stage_entered_date '2026-13-01' is not a valid %Y-%m-%d date
+  row 2298: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 2391: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 2392: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 2449: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 2482: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 2497: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 2504: stage_entered_date '2026-02-30' is not a valid %Y-%m-%d date
+  row 2550: missing required field 'owner'
+  row 2568: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 2591: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 2638: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 2667: stage_entered_date '2026-00-10' is not a valid %Y-%m-%d date
+  row 2747: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 2755: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 2764: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 2775: missing required field 'owner'
+  row 2781: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 2839: stage_entered_date 2026-12-08 is after --today 2026-10-20
+  row 2848: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 2877: stage_entered_date '2026-00-10' is not a valid %Y-%m-%d date
+  row 2918: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 2919: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 2938: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 2969: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3020: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 3064: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 3088: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3149: stage_entered_date '2026-04-31' is not a valid %Y-%m-%d date
+  row 3165: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 3192: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 3198: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3208: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3224: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 3226: stage_entered_date '2026-04-31' is not a valid %Y-%m-%d date
+  row 3271: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 3279: missing required field 'owner'
+  row 3284: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 3335: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 3374: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3412: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3454: stage_entered_date 2026-12-17 is after --today 2026-10-20
+  row 3463: stage_entered_date '2026-02-30' is not a valid %Y-%m-%d date
+  row 3469: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 3513: stage_entered_date '2026-02-30' is not a valid %Y-%m-%d date
+  row 3541: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 3554: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 3592: missing required field 'owner'
+  row 3621: stage_entered_date 2026-10-22 is after --today 2026-10-20
+  row 3625: missing required field 'owner'
+  row 3631: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3632: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 3655: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 3675: missing required field 'owner'
+  row 3687: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 3711: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 3728: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 3742: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3750: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3801: stage_entered_date 2026-11-13 is after --today 2026-10-20
+  row 3820: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 3856: stage_entered_date 2026-11-06 is after --today 2026-10-20
+  row 3873: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 3874: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 3962: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 3963: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 3992: missing required field 'owner'
+  row 3995: missing required field 'owner'
+  row 4128: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 4145: missing required field 'owner'
+  row 4150: missing required field 'owner'
+  row 4257: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 4350: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 4424: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 4507: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+  row 4533: stage_entered_date 2026-11-03 is after --today 2026-10-20
+  row 4551: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 4553: stage_entered_date 2026-11-17 is after --today 2026-10-20
+  row 4555: stage_entered_date 2026-10-26 is after --today 2026-10-20
+  row 4569: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 4593: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 4608: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 4632: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 4672: stage_entered_date 2026-12-04 is after --today 2026-10-20
+  row 4691: stage 'phone screen' (normalized 'phone_screen') is not listed in config thresholds or terminal_stages
+  row 4753: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 4773: stage 'Final Interveiw' (normalized 'final_interveiw') is not listed in config thresholds or terminal_stages
+  row 4833: missing required field 'owner'
+  row 4849: stage_entered_date 'Oct 5, 2026' is not a valid %Y-%m-%d date
+  row 4863: stage_entered_date 2026-10-29 is after --today 2026-10-20
+  row 4896: stage_entered_date '05/10/2026' is not a valid %Y-%m-%d date
+  row 4906: stage_entered_date 2026-10-27 is after --today 2026-10-20
+  row 4914: stage_entered_date '2026/10/05' is not a valid %Y-%m-%d date
+Warnings: 20
+  row 78: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 326: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 590: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 605: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 935: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 1145: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 1238: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 1328: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 1449: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 1621: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 1799: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 2163: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 2215: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 2336: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 3034: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 3680: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 3829: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 3879: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 4463: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+  row 4890: row has more fields than the header (likely an unescaped comma in notes); extra fields were rejoined into 'notes'
+On hold (not flagged): 29
+  M04872 Steve Brooks (screening)
+  M04882 Alice Kim (applied)
+  M04873 Uma Garcia (final_interview)
+  M04875 Leo Smith (final_interview)
+  M04881 Steve Hugo (final_interview)
+  M04861 Olivia Davis (offer)
+  M04862 Bob Novak (applied)
+  M04884 Karen Lee (final_interview)
+  M04877 Quinn Brooks (interview)
+  M04880 Elena Chen (offer)
+  M04635 Karen Young (offer)
+  M04631 Victor Hugo (screening)
+  M04876 Victor Singh (offer)
+  M04867 Noah Patel (interview)
+  M04869 Steve Kim (interview)
+  M04883 Bob Lee (applied)
+  M04632 Karen Harper (screening)
+  M04878 Elena Patel (final_interview)
+  M04863 Rachel Singh (final_interview)
+  M04874 Paul Park (interview)
+  M04879 Wendy Novak (final_interview)
+  M04865 Karen Martin (interview)
+  M04868 Elena Smith (offer)
+  M04870 Bob Hugo (final_interview)
+  M04871 Olivia Garcia (final_interview)
+  M04634 Frank Martin (interview)
+  M04866 Frank Wright (final_interview)
+  M04864 Yara Hugo (screening)
+  M04633 Zoe Singh (final_interview)
+
+Stalled candidates, ranked (10):
+1. [7968] Karen Lee (M04903) - Data Analyst / offer, 666d in stage (threshold 2)
+   breakdown: 664 x 4 x 3 = 7968
+   action [fallback] -> waiting_on=candidate: Priya Nair should contact Karen Lee for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+2. [7956] Leo Martin (M04915) - Backend Engineer / offer, 665d in stage (threshold 2)
+   breakdown: 663 x 4 x 3 = 7956
+   action [fallback] -> waiting_on=candidate: Dana Cole should contact Leo Martin for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+3. [4188] Jack Brooks (M04909) - Recruiter Ops / final_interview, 702d in stage (threshold 4)
+   breakdown: 698 x 3 x 2 = 4188
+   action [fallback] -> waiting_on=hiring_manager: Marcus Lee should contact Jack Brooks for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+4. [3703.5] Frank Cho (M04905) - Recruiter Ops / screening, 826d in stage (threshold 3)
+   breakdown: 823 x 1.5 x 3 = 3703.5
+   action [fallback] -> waiting_on=recruiter: Dana Cole should contact Frank Cho for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+5. [3630] Wendy Alo (M04904) - Recruiter Ops / final_interview, 609d in stage (threshold 4)
+   breakdown: 605 x 3 x 2 = 3630
+   action [fallback] -> waiting_on=hiring_manager: Marcus Lee should contact Wendy Alo for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+6. [3591.0] David Garcia (M04919) - Software Engineer / screening, 801d in stage (threshold 3)
+   breakdown: 798 x 1.5 x 3 = 3591.0
+   action [fallback] -> waiting_on=recruiter: Marcus Lee should contact David Garcia for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+7. [3186] Uma Garcia (M04901) - Data Analyst / final_interview, 535d in stage (threshold 4)
+   breakdown: 531 x 3 x 2 = 3186
+   action [fallback] -> waiting_on=hiring_manager: Jon Ortiz should contact Uma Garcia for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+8. [3156] Zoe Davis (M04917) - Backend Engineer / offer, 791d in stage (threshold 2)
+   breakdown: 789 x 4 x 1 = 3156
+   action [fallback] -> waiting_on=candidate: Marcus Lee should contact Zoe Davis for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+9. [3150] Leo Smith (M04918) - Data Analyst / final_interview, 529d in stage (threshold 4)
+   breakdown: 525 x 3 x 2 = 3150
+   action [fallback] -> waiting_on=hiring_manager: Jon Ortiz should contact Leo Smith for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+10. [2371.5] Grace Chen (M04902) - Recruiter Ops / screening, 530d in stage (threshold 3)
+   breakdown: 527 x 1.5 x 3 = 2371.5
+   action [fallback] -> waiting_on=recruiter: Priya Nair should contact Grace Chen for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
