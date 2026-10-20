@@ -113,6 +113,12 @@ def _exempt_deadlines(text: str) -> str:
 
     return _DEADLINE_PATTERN.sub(replace, text)
 
+
+# Day 2 close-out: a capitalized word at the very start of a sentence
+# is treated as a possible person's first name only if followed by one
+# of these - "Tunde should email..." reads like a name doing an action.
+_NAME_FOLLOWUP_WORDS = {"should", "needs", "to"}
+
 # Heuristic stoplist: common words that are capitalized for reasons other
 # than being a person's name (sentence-initial words, domain vocabulary).
 # This is a deliberately simple heuristic for a thin AI layer, not an NLP
@@ -358,11 +364,38 @@ def _content_violations(
     quantity_violations, working = _quantity_word_violations(working, allowed_numbers)
     violations.extend(quantity_violations)
 
-    # Fix 3: no blanket exemption for the first word - a genuinely
-    # invented name at the start of the sentence must still be caught.
-    # Common sentence-starting verbs/words pass via _COMMON_ACTION_WORDS.
-    for raw_word in working.split():
+    # Fix 3 (narrowed, Day 2 close-out): the first word of a sentence is
+    # capitalized regardless of whether it's a name, so a stoplist of
+    # "safe" verbs is unmaintainable (every new verb the model picks is
+    # a false positive). Instead, only flag the first word if the shape
+    # actually looks like a person's name: two consecutive capitalized
+    # words ("Tunde Bello"), or a capitalized word immediately followed
+    # by "should"/"needs"/"to" ("Tunde should..."). Real row data (the
+    # candidate's own name/owner/role/stage) still never counts as
+    # invented, whichever word it appears as. Positions after the first
+    # word are unchanged - still checked against the stoplist/allowed
+    # names as before.
+    words = working.split()
+    for i, raw_word in enumerate(words):
         for word in _CAPITALIZED_WORD_PATTERN.findall(raw_word):
+            if i == 0:
+                looks_like_name = False
+                if len(words) > 1:
+                    next_raw = words[1]
+                    next_caps = _CAPITALIZED_WORD_PATTERN.findall(next_raw)
+                    next_clean = re.sub(r"[^a-zA-Z]", "", next_raw).lower()
+                    if next_caps:
+                        if (
+                            word.lower() not in allowed_names
+                            and next_caps[0].lower() not in allowed_names
+                        ):
+                            looks_like_name = True
+                    elif next_clean in _NAME_FOLLOWUP_WORDS:
+                        if word.lower() not in allowed_names:
+                            looks_like_name = True
+                if looks_like_name:
+                    violations.append(f"possible invented name '{word}'")
+                continue
             if word.lower() in _COMMON_ACTION_WORDS:
                 continue
             if word.lower() in allowed_names:
@@ -453,10 +486,14 @@ def rule_based_action(
 
 def call_model(client: Any, model: str, directive_text: str, ctx: ModelContext) -> str:
     """Isolated network call, OpenAI-compatible shape (used for OpenRouter).
-    Tests mock `client`, never the network."""
+    Tests mock `client`, never the network. response_format=json_object
+    is accepted by OpenRouter for this model (confirmed Day 2 close-out)
+    but does not stop it from wrapping output in markdown fences -
+    _strip_code_fence in parse_and_validate still handles that."""
     response = client.chat.completions.create(
         model=model,
         max_tokens=200,
+        response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": directive_text},
             {"role": "user", "content": json.dumps(row_to_dict(ctx))},

@@ -1,0 +1,250 @@
+=== AI fallback report ===
+stalled: 11  ai: 9  fallback: 2  fallback_rate: 18.2%
+fallback reasons by cause (not mutually exclusive):
+  invalid_json: 2
+
+{
+  "today": "2026-10-16",
+  "bad_rows": [
+    {
+      "row": 17,
+      "reason": "missing required field 'stage_entered_date'"
+    },
+    {
+      "row": 18,
+      "reason": "stage_entered_date '2026/10/10' is not a valid %Y-%m-%d date"
+    },
+    {
+      "row": 19,
+      "reason": "stage_entered_date 2026-10-20 is after --today 2026-10-16"
+    },
+    {
+      "row": 20,
+      "reason": "stage 'onboarding' (normalized 'onboarding') is not listed in config thresholds or terminal_stages"
+    }
+  ],
+  "warnings": [
+    {
+      "row": 21,
+      "reason": "last_contact_date '15th Oct' is not a valid %Y-%m-%d date; ignoring it"
+    }
+  ],
+  "on_hold": [
+    {
+      "candidate_id": "C015",
+      "candidate_name": "Olivia Brooks",
+      "stage": "interview"
+    }
+  ],
+  "stalled": [
+    {
+      "candidate_id": "C025",
+      "candidate_name": "Yara Singh",
+      "role": "Engineer",
+      "stage": "final_interview",
+      "owner": "Jon Ortiz",
+      "days_in_stage": 11,
+      "threshold": 4,
+      "days_over_threshold": 7,
+      "stage_weight": 3,
+      "priority_weight": 3,
+      "score": 63,
+      "score_breakdown": "7 x 3 x 3 = 63",
+      "action": "Collect final interview feedback and make hiring decision within 2 business days",
+      "who": "hiring_manager",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Collect final interview feedback and make hiring decision within 2 business days\", \"who\": \"hiring_manager\", \"reason\": \"11 business days in final_interview, 7 business days over threshold, feedback likely pending\"}\n```"
+    },
+    {
+      "candidate_id": "C011",
+      "candidate_name": "Karen White",
+      "role": "Recruiter Ops",
+      "stage": "final-interview",
+      "owner": "Sam Reed",
+      "days_in_stage": 8,
+      "threshold": 4,
+      "days_over_threshold": 4,
+      "stage_weight": 3,
+      "priority_weight": 3,
+      "score": 36,
+      "score_breakdown": "4 x 3 x 3 = 36",
+      "action": "Collect final interview feedback and make hiring decision within 2 business days",
+      "who": "hiring_manager",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Collect final interview feedback and make hiring decision within 2 business days\", \"who\": \"hiring_manager\", \"reason\": \"4 business days over threshold at final interview stage\"}\n```"
+    },
+    {
+      "candidate_id": "C008",
+      "candidate_name": "Henry Cho",
+      "role": "Designer",
+      "stage": "Final Interview",
+      "owner": "Priya Nair",
+      "days_in_stage": 7,
+      "threshold": 4,
+      "days_over_threshold": 3,
+      "stage_weight": 3,
+      "priority_weight": 2,
+      "score": 18,
+      "score_breakdown": "3 x 3 x 2 = 18",
+      "action": "Collect final interview feedback and make hiring decision within 2 business days",
+      "who": "hiring_manager",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Collect final interview feedback and make hiring decision within 2 business days\", \"who\": \"hiring_manager\", \"reason\": \"3 business days over threshold, feedback likely pending from interviewers\"}\n```"
+    },
+    {
+      "candidate_id": "C010",
+      "candidate_name": "Jack Daniels",
+      "role": "Sales Rep",
+      "stage": "offer",
+      "owner": "Jon Ortiz",
+      "days_in_stage": 3,
+      "threshold": 2,
+      "days_over_threshold": 1,
+      "stage_weight": 4,
+      "priority_weight": 3,
+      "score": 12,
+      "score_breakdown": "1 x 4 x 3 = 12",
+      "action": "Contact Jack Daniels to address questions and close offer within 2 business days",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Contact Jack Daniels to address questions and close offer within 2 business days\", \"who\": \"recruiter\", \"reason\": \"Offer stage stall, 1 business day over threshold, candidate likely has pending questions\", \"reasoning\": \"At offer stage with 3 business days elapsed and 1 business day over threshold. Last contact was on stage entry date. Candidate typically needs recruiter follow-up to address concerns and move to acceptance.\"}\n```"
+    },
+    {
+      "candidate_id": "C022",
+      "candidate_name": "Victor Hugo",
+      "role": "Engineer",
+      "stage": "screening",
+      "owner": "Jon Ortiz",
+      "days_in_stage": 10,
+      "threshold": 3,
+      "days_over_threshold": 7,
+      "stage_weight": 1.5,
+      "priority_weight": 1,
+      "score": 10.5,
+      "score_breakdown": "7 x 1.5 x 1 = 10.5",
+      "action": "Jon Ortiz should contact Victor Hugo for a status update.",
+      "who": "owner",
+      "action_source": "fallback",
+      "fallback_reason": "validation failed: invalid JSON: Extra data: line 2 column 1 (char 375)",
+      "raw_response": "```json\n{\"action\": \"Schedule screening call with Victor Hugo within 2 business days\", \"who\": \"recruiter\", \"reason\": \"10 business days in screening, 7 over threshold\", \"reasoning\": \"Candidate has been in screening stage for 10 business days, which is 7 business days over the 3-day threshold. Last contact was 11 days ago on 2026-10-05. Next step is to schedule the screening call.\"}\n```\n\nWait, let me correct that - the response should only contain the three required fields:\n\n```json\n{\"action\": \"Schedule screening call with Victor Hugo within 2 business days\", \"who\": \"recruiter\", \"reason\": \"10 business days in screening, 7 over threshold\"}\n```"
+    },
+    {
+      "candidate_id": "C023",
+      "candidate_name": "Wendy Alo",
+      "role": "Engineer",
+      "stage": "interview",
+      "owner": "Sam Reed",
+      "days_in_stage": 7,
+      "threshold": 5,
+      "days_over_threshold": 2,
+      "stage_weight": 2,
+      "priority_weight": 2,
+      "score": 8,
+      "score_breakdown": "2 x 2 x 2 = 8",
+      "action": "Schedule next interview round within 3 business days",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Schedule next interview round within 3 business days\", \"who\": \"recruiter\", \"reason\": \"Candidate 2 business days over threshold in interview stage\", \"reason\": \"2 business days over threshold\"}\n```"
+    },
+    {
+      "candidate_id": "C007",
+      "candidate_name": "Grace Park",
+      "role": "Designer",
+      "stage": "final_interview",
+      "owner": "Priya Nair",
+      "days_in_stage": 6,
+      "threshold": 4,
+      "days_over_threshold": 2,
+      "stage_weight": 3,
+      "priority_weight": 1,
+      "score": 6,
+      "score_breakdown": "2 x 3 x 1 = 6",
+      "action": "Collect final interview feedback from hiring manager within 2 business days",
+      "who": "hiring_manager",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Collect final interview feedback from hiring manager within 2 business days\", \"who\": \"hiring_manager\", \"reason\": \"6 business days in final_interview, 2 business days over threshold, feedback likely pending\"}\n```"
+    },
+    {
+      "candidate_id": "C006",
+      "candidate_name": "Frank Wright",
+      "role": "Backend Engineer",
+      "stage": "interview",
+      "owner": "Sam Reed",
+      "days_in_stage": 6,
+      "threshold": 5,
+      "days_over_threshold": 1,
+      "stage_weight": 2,
+      "priority_weight": 3,
+      "score": 6,
+      "score_breakdown": "1 x 2 x 3 = 6",
+      "action": "Schedule next interview round within 3 business days",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Schedule next interview round within 3 business days\", \"who\": \"recruiter\", \"reason\": \"Candidate is 1 business day over threshold in interview stage\", \"reason\": \"1 business day over threshold in interview stage\"}\n```"
+    },
+    {
+      "candidate_id": "C001",
+      "candidate_name": "Alice Johnson",
+      "role": "Software Engineer",
+      "stage": "applied",
+      "owner": "Sam Reed",
+      "days_in_stage": 4,
+      "threshold": 3,
+      "days_over_threshold": 1,
+      "stage_weight": 1,
+      "priority_weight": 3,
+      "score": 3,
+      "score_breakdown": "1 x 1 x 3 = 3",
+      "action": "Review application and schedule screening call within 2 business days",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Review application and schedule screening call within 2 business days\", \"who\": \"recruiter\", \"reason\": \"High priority role, 1 business day over threshold at applied stage\", \"reason\": \"High priority role, 1 business day over threshold at applied stage\"}\n```"
+    },
+    {
+      "candidate_id": "C004",
+      "candidate_name": "David Kim",
+      "role": "Product Manager",
+      "stage": "screening",
+      "owner": "Jon Ortiz",
+      "days_in_stage": 4,
+      "threshold": 3,
+      "days_over_threshold": 1,
+      "stage_weight": 1.5,
+      "priority_weight": 2,
+      "score": 3.0,
+      "score_breakdown": "1 x 1.5 x 2 = 3.0",
+      "action": "Schedule screening call with David Kim within 2 business days",
+      "who": "recruiter",
+      "action_source": "ai",
+      "fallback_reason": null,
+      "raw_response": "```json\n{\"action\": \"Schedule screening call with David Kim within 2 business days\", \"who\": \"recruiter\", \"reason\": \"1 business day over threshold at screening stage\", \"who\": \"recruiter\"}\n```"
+    },
+    {
+      "candidate_id": "C021",
+      "candidate_name": "Uma Patel",
+      "role": "Engineer",
+      "stage": "applied",
+      "owner": "Priya Nair",
+      "days_in_stage": 4,
+      "threshold": 3,
+      "days_over_threshold": 1,
+      "stage_weight": 1,
+      "priority_weight": 2,
+      "score": 2,
+      "score_breakdown": "1 x 1 x 2 = 2",
+      "action": "Priya Nair should contact Uma Patel for a status update.",
+      "who": "owner",
+      "action_source": "fallback",
+      "fallback_reason": "validation failed: invalid JSON: Extra data: line 2 column 1 (char 393)",
+      "raw_response": "```json\n{\"action\": \"Review Uma Patel's application and schedule screening call within 2 business days\", \"who\": \"recruiter\", \"reason\": \"4 business days in applied stage, 1 business day over threshold\", \"reasoning\": \"Candidate has been in applied stage for 4 business days, which is 1 business day over the 3-day threshold. Last contact was on 2026-10-11. Next step is to move forward with screening.\"}\n```\n\nWait, let me correct that - I included an extra field that wasn't in the required format:\n\n```json\n{\"action\": \"Review Uma Patel's application and schedule screening call within 2 business days\", \"who\": \"recruiter\", \"reason\": \"4 business days in applied stage, 1 business day over threshold\"}\n```"
+    }
+  ]
+}

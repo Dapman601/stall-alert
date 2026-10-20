@@ -311,11 +311,14 @@ def test_invented_name_as_first_word_of_action_falls_back():
 
 
 def test_invented_name_as_first_word_of_reason_falls_back():
+    # "Marcus should" matches the should/needs/to pattern. Plain
+    # "Marcus flagged..." (no trigger word after it) is the documented
+    # gap - see test_single_invented_name_without_trigger_not_caught.
     ctx = make_ctx()
     text = _respond(
         action="Follow up with the candidate about the applied role.",
         who="recruiter",
-        reason="Marcus flagged this candidate as a priority last week.",
+        reason="Marcus should flag this candidate as a priority.",
     )
     client = FakeClient(text=text)
     result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
@@ -761,3 +764,115 @@ def test_deadline_within_60_hours_in_action_falls_back():
     result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
     assert result.source == "fallback"
     assert "invented duration" in result.fallback_reason
+
+
+# --- Day 2 close-out, name check: sentence-initial words no longer
+# depend on a stoplist - only flagged if the shape looks like a
+# person's name (two consecutive capitalized words, or a capitalized
+# word followed by should/needs/to). Real model verbs the stoplist
+# never anticipated (the "Collect" regression) now pass automatically. ---
+
+def test_sentence_initial_unknown_verb_collect_passes():
+    row = make_row(
+        candidate_id="C008", candidate_name="Henry Cho", role="Designer",
+        stage="Final Interview", stage_entered_date=date(2026, 10, 7), owner="Priya Nair",
+        role_priority="medium",
+    )
+    ctx = make_ctx(row=row, days_in_stage=7, threshold=4, days_over_threshold=3)
+    text = _respond(
+        action="Collect final interview feedback and make a hiring decision.",
+        who="hiring_manager",
+        reason="Three business days over threshold at final interview stage.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    assert result.source == "ai"
+
+
+def test_sentence_initial_unknown_verb_gather_passes():
+    ctx = make_ctx()
+    text = _respond(
+        action="Gather feedback from the hiring manager about this candidate.",
+        who="hiring_manager",
+        reason="Candidate is past the applied stage threshold.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    assert result.source == "ai"
+
+
+def test_sentence_initial_unknown_verb_escalate_passes():
+    ctx = make_ctx()
+    text = _respond(
+        action="Escalate this candidate's feedback to the hiring manager.",
+        who="hiring_manager",
+        reason="Candidate is past the applied stage threshold.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    assert result.source == "ai"
+
+
+def test_two_word_invented_name_at_sentence_start_falls_back():
+    ctx = make_ctx()
+    text = _respond(
+        action="Tunde Bello should email the candidate about next steps.",
+        who="recruiter",
+        reason="Candidate is past the applied stage threshold.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    assert result.source == "fallback"
+    assert "invented name" in result.fallback_reason
+
+
+def test_single_invented_name_followed_by_should_falls_back():
+    ctx = make_ctx()
+    text = _respond(
+        action="Tunde should email the candidate about next steps.",
+        who="recruiter",
+        reason="Candidate is past the applied stage threshold.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    assert result.source == "fallback"
+    assert "invented name" in result.fallback_reason
+
+
+def test_real_candidate_name_right_after_sentence_initial_verb_passes():
+    # "Review Alice Johnson's..." is "Verb FirstName" (two capitalized
+    # words), but Alice Johnson is the real candidate - must not be
+    # mistaken for an invented two-word name.
+    row = make_row(candidate_id="C001", candidate_name="Alice Johnson")
+    ctx = make_ctx(row=row)
+    text = _respond(
+        action="Review Alice Johnson's application and advance or reject.",
+        who="recruiter",
+        reason="Candidate is past the applied stage threshold.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    assert result.source == "ai"
+
+
+@pytest.mark.xfail(
+    reason="Known gap: a single invented name at the start of a "
+    "sentence, NOT followed by should/needs/to and not paired with a "
+    "second capitalized word (e.g. 'Marcus flagged...'), no longer "
+    "matches either name-shape heuristic and is not caught. Narrowing "
+    "the sentence-initial check to avoid stoplist false positives "
+    "(the 'Collect' regression) reopened this narrower gap.",
+    strict=True,
+)
+def test_single_invented_name_without_trigger_word_not_caught():
+    ctx = make_ctx()
+    text = _respond(
+        action="Follow up with the candidate about the applied role.",
+        who="recruiter",
+        reason="Marcus flagged this candidate as a priority last week.",
+    )
+    client = FakeClient(text=text)
+    result = ai_actions.suggest_action(client, "test-model", "directive", ctx)
+    # This SHOULD fall back ("Marcus" is invented), but the narrowed
+    # heuristic has no trigger here, so it incorrectly passes as "ai".
+    assert result.source == "fallback"
