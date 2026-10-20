@@ -158,7 +158,7 @@ wording-only).
 - v7 (outdated-example removal) vs. v6: fallback 0.0% both (3.0%/0.0%
   within normal run-to-run variance), 14/15 eval pass both, identical
   single failure (E011) — no measured effect, as expected for a wording-
-  only change (`reports/day5_v7_*`, `reports/day4_eval_v7_run1.json`)
+  only change (`reports/day5_v7_*`, `reports/day5_eval_v7_run1.json`)
 
 **What broke:** nothing new — this was a freeze/verify/document day by
 design, not a feature day.

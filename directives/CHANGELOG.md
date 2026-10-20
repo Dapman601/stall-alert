@@ -77,17 +77,17 @@ guessed.
   rule (`"Schedule the final interview this week" is fine; inventing a
   specific date or person's name is not"`), replacing it with a plain
   "Never invent a specific date or a person's name" — readability only,
-  no rule change. Measured immediately before (v6, `sample_board.csv`, 3
-  runs, 33 rows): fallback 3.0% (1/33), 0 `deadline_allowed` violations, 0
+  no rule change. Measured immediately before (v6, `sample_board.csv`,
+  **1 run**, 11 rows — the only v6 sample_board measurement that exists):
+  fallback 0.0% (0/11), 0 `deadline_allowed` violations, 0 of 2
   final_interview actions containing "schedule"
-  (`reports/day4_part2_fix2_run1.txt`, `run2.txt`, `run3.txt`). Measured
-  after v7 (same test, 3 new runs): fallback **0.0%** (0/33), 0
-  `deadline_allowed` violations, 0 final_interview actions containing
+  (`reports/day4_part2_delimiter_sample_board.txt`). Measured after v7
+  (same test, 3 new runs, 33 rows — not the same run count, so not a
+  strict apples-to-apples sample size): fallback **0.0%** (0/33), 0
+  `deadline_allowed` violations, 0 of 6 final_interview actions containing
   "schedule" (`reports/day5_v7_sample_board_run1.txt`, `run2.txt`,
-  `run3.txt`) — the fallback difference is within normal run-to-run
-  variance already observed elsewhere in this project, not attributable
-  to the example's removal. 15-case eval after v7: **14/15** passed,
-  identical single failure (E011, same reason as v6) — graded by a fresh
-  agent against `evals/cases.json` (`reports/day4_eval_v7_run1.json`). No
-  case changed verdict from v6. In short: removing the outdated example
-  had no measured effect, as expected for a wording-only cleanup.
+  `run3.txt`). 15-case eval after v7: **14/15** passed, identical single
+  failure (E011, same reason as v6) — graded by a fresh agent against
+  `evals/cases.json` (`reports/day5_eval_v7_run1.json`). No case changed verdict
+  from v6. In short: removing the outdated example had no measured
+  effect, as expected for a wording-only cleanup.
