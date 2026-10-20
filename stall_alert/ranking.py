@@ -23,6 +23,7 @@ class RankedCandidate:
 
 
 def score(days_over_threshold: int, stage_weight: float, priority_weight: float) -> float:
+    """days_over_threshold * stage_weight * priority_weight."""
     return days_over_threshold * stage_weight * priority_weight
 
 

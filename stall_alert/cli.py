@@ -22,6 +22,7 @@ DEFAULT_MODEL = "anthropic/claude-sonnet-4.5"
 
 
 def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
+    """Define and parse the stall-alert CLI's arguments."""
     parser = argparse.ArgumentParser(prog="stall-alert")
     parser.add_argument("board_csv", help="Path to the hiring-board CSV export")
     parser.add_argument("--config", default="config.yaml", help="Path to config.yaml")
@@ -58,6 +59,7 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
 
 
 def resolve_today(today_arg: Optional[str]) -> date:
+    """Parse --today if given, else use the real current date."""
     if today_arg is None:
         return date.today()
     return datetime.strptime(today_arg, "%Y-%m-%d").date()
@@ -70,6 +72,7 @@ class CombinedBadRow:
 
 
 def run(argv: Optional[list[str]] = None) -> int:
+    """Load the board, rank stalled candidates, get an action for each, and print the result. Returns the process exit code."""
     args = parse_args(argv)
     today = resolve_today(args.today)
     try:
@@ -159,6 +162,7 @@ def classify_fallback_causes(reason: str) -> list[str]:
 
 
 def render_report(ranked: list[RankedCandidate], actions: dict) -> str:
+    """Render the --report fallback-rate summary: counts, rate, and fallback causes grouped by cause."""
     stalled_count = len(ranked)
     ai_count = sum(1 for rc in ranked if actions[rc.status.row.candidate_id].source == "ai")
     fallback_count = stalled_count - ai_count
@@ -207,6 +211,7 @@ def render(
     ranked: list[RankedCandidate],
     actions: dict[str, ai_actions.ActionResult],
 ) -> str:
+    """Render the full output (board results plus bad rows/warnings/on-hold) in the requested format."""
     if fmt == "json":
         return _render_json(today, bad_rows, warnings, on_hold, ranked, actions)
     if fmt == "md":
@@ -335,6 +340,7 @@ def _render_md(today, bad_rows, warnings, on_hold, ranked, actions) -> str:
 
 
 def main() -> None:
+    """Entry point for `python -m stall_alert` / the `stall-alert` console script."""
     sys.exit(run())
 
 

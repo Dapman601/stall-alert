@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\DELL\Documents\stall_alert\stall_alert\cli.py", line 342, in <module>
+    main()
+  File "C:\Users\DELL\Documents\stall_alert\stall_alert\cli.py", line 338, in main
+    sys.exit(run())
+             ^^^^^
+  File "C:\Users\DELL\Documents\stall_alert\stall_alert\cli.py", line 102, in run
+    ranked = rank(stalled, config)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\stall_alert\stall_alert\ranking.py", line 37, in rank
+    stage_weight = config.stage_weights[status.normalized_stage]
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'interview'

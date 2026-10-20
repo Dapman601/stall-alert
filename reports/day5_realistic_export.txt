@@ -1,0 +1,4 @@
+Error: CSV is missing required column(s): candidate_id, candidate_name, role, stage, stage_entered_date, owner, role_priority
+Columns found in the file: Candidate Name, Current Stage, Date Moved, Recruiter, Role Applied
+  'candidate_id' not found - did you mean 'Candidate Name'?
+  'candidate_name' not found - did you mean 'Candidate Name'?

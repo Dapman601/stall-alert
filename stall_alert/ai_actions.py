@@ -199,6 +199,7 @@ class ActionResult:
 
 
 def load_directive(path: str) -> str:
+    """Read the directive.md text used as the model's system prompt."""
     with open(path, encoding="utf-8") as f:
         return f.read()
 
@@ -221,6 +222,7 @@ def _delimit_notes(notes: str) -> str:
 
 
 def row_to_dict(ctx: ModelContext) -> dict[str, Any]:
+    """Build the JSON payload sent to the model: row fields plus computed stall facts."""
     row = ctx.row
     return {
         "candidate_id": row.candidate_id,
@@ -462,6 +464,7 @@ def _content_violations(
 def validate_ai_response(
     parsed: Any, ctx: ModelContext, raw_response: Optional[str] = None
 ) -> ActionResult:
+    """Check a parsed model response against the candidate's own row data; raise ValidationError if untrustworthy."""
     if not isinstance(parsed, dict):
         raise ValidationError("response is not a JSON object")
 
@@ -514,6 +517,7 @@ def _strip_code_fence(text: str) -> str:
 
 
 def parse_and_validate(raw_text: str, ctx: ModelContext) -> ActionResult:
+    """Parse the model's raw text as JSON and validate it; raise ValidationError on either failure."""
     try:
         parsed = json.loads(_strip_code_fence(raw_text))
     except json.JSONDecodeError as e:
@@ -568,6 +572,7 @@ def call_model(client: Any, model: str, directive_text: str, ctx: ModelContext) 
 def suggest_action(
     client: Any, model: str, directive_text: str, ctx: ModelContext
 ) -> ActionResult:
+    """Call the model for one candidate and validate the result, falling back to a rule-based action on any failure."""
     try:
         raw_text = call_model(client, model, directive_text, ctx)
     except Exception as e:

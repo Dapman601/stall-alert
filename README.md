@@ -1,21 +1,35 @@
 # stall-alert
 
-Reads a CSV export of a hiring board, finds candidates who have not moved
-stage for longer than an allowed number of business days, ranks who to
-follow up with first, and suggests one next action per candidate. A
-recruiter reads the output; nothing is sent automatically.
+Reads a CSV export of a hiring board and finds candidates who have sat in
+their current stage longer than that stage allows, so a recruiter doesn't
+have to notice by hand on a busy board. It ranks who to follow up with
+first using a score a human can check by eye, and optionally asks an AI
+model to suggest one specific next action per stalled candidate. A human
+reads every suggestion before acting on it; the tool never sends a message
+or updates anything itself.
 
 ## Setup
 
-```
+**Windows (PowerShell):**
+```powershell
+python -m venv venv
+venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+$env:OPENROUTER_API_KEY = "your-key-here"   # optional, only needed for the AI layer
 ```
 
-Set `OPENROUTER_API_KEY` in your environment if you want the AI layer
-(skip it entirely with `--no-ai`). Optionally set `STALL_ALERT_MODEL`
-to an OpenRouter model id (default: `anthropic/claude-sonnet-4.5`).
-Requests go to OpenRouter's OpenAI-compatible endpoint
-(`https://openrouter.ai/api/v1/chat/completions`), not directly to
+**Mac/Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+export OPENROUTER_API_KEY="your-key-here"   # optional, only needed for the AI layer
+```
+
+Skip the AI layer entirely with `--no-ai` if you don't want to set the key.
+Optionally set `STALL_ALERT_MODEL` to an OpenRouter model id (default:
+`anthropic/claude-sonnet-4.5`). Requests go to OpenRouter's OpenAI-compatible
+endpoint (`https://openrouter.ai/api/v1/chat/completions`), not directly to
 Anthropic.
 
 ## Running it
@@ -31,6 +45,8 @@ Flags:
 - `--top N` show only the top N stalled candidates
 - `--format table|json|md` output format (default `table`)
 - `--directive` path to the AI directive file (default `directive.md`)
+- `--report` print an AI fallback-rate summary alongside the normal output
+- `--encoding` override CSV encoding detection (e.g. `cp1252`)
 
 ## Running tests
 
@@ -39,6 +55,19 @@ pytest
 ```
 
 All AI calls are mocked in tests; the suite never makes a network call.
+
+## Running the quality eval
+
+```
+python scripts/run_eval.py --label mylabel --run 1 --cases evals/cases.json --directive directive.md
+```
+
+This makes one real OpenRouter call per case in `evals/cases.json` (15
+cases, so 15 live calls) and saves the results to
+`reports/day4_eval_<label>_run<run>.json`. Each case's `good_action_criteria`
+is meant to be graded afterwards (by hand, or by a second LLM pass) against
+the saved `action`/`waiting_on`/`reason` — the script itself only runs the
+cases and saves raw output; it does not grade them.
 
 ## Architecture
 
@@ -74,6 +103,13 @@ score = days_over_threshold * stage_weight * priority_weight
 
 "Stalled" means `days_in_stage > threshold`, strictly greater — a
 candidate exactly at the threshold is **not** stalled.
+
+**Worked example (Yara Singh, `data/sample_board.csv`, candidate C025):**
+`final_interview`, 11 business days in stage, threshold 4 →
+`days_over_threshold = 11 - 4 = 7`. `final_interview`'s `stage_weight` is 3;
+her `role_priority` is `high`, weight 3. `score = 7 x 3 x 3 = 63` — the
+highest score in the sample board, shown in the output as
+`"score_breakdown": "7 x 3 x 3 = 63"`.
 
 ## Business-day counting
 
@@ -279,6 +315,68 @@ pre-delimiter `final` eval runs. In short: measured to have no effect either
 way, as expected for a safeguard against a failure mode that wasn't
 occurring.
 
+## Results
+
+Every number below is measured and cites the report file it came from.
+Full derivation and commentary is in `directives/CHANGELOG.md`.
+
+**AI fallback rate, `sample_board.csv`, across the project's milestones**
+(each row vs. the directive/code state in effect at the time, not vs. Day 1):
+
+| Milestone | Fallback rate | Source |
+|---|---|---|
+| Day 1 baseline | 82% (9/11) | not saved to a report file — see note below |
+| v1 directive + code Fixes 1-5 | 3.0% avg (0.0%, 9.1%, 0.0%) | `reports/fix5_scoped_run1/2/3.txt` |
+| v2 directive | 42.4% avg (63.6%, 27.3%, 36.4%) | `reports/day2_v2_run1/2/3.txt` |
+| v3 directive | 0.0% avg (3 runs) | `reports/day2_v3_run1/2/3.txt` |
+| v4 (`deadline_allowed` added) | 0.0% (0/33 across 3 runs) | `reports/day4_part2_fix1_run1/2/3.txt` |
+| v5/`final` (`waiting_on` rename) | 3.0% avg (0.0%, 9.1%, 0.0%) | `reports/day4_part2_fix2_run1/2/3.txt` |
+| v6 (notes delimiter) | 0.0% | `reports/day4_part2_delimiter_sample_board.txt` |
+| v7 (example removed) | 0.0% avg (3 runs) | `reports/day5_v7_sample_board_run1/2/3.txt` |
+
+The Day 1 row has no backing report file. It comes from the Day 1 session
+output and is quoted in commit `3ff961f`'s message, but that figure was
+never saved to `reports/` as a run file.
+
+v2's jump upward, not downward, is real, and the cause is visible directly
+in the fallback reasons (`reports/day2_v2_run1/2/3.txt`): 11 of the 14
+fallbacks across the 3 runs were `possible invented name 'Collect'` or
+`'Request'` — v2's new stage-specific guidance led the model to open
+actions with verbs like "Collect feedback..." or "Request a decision...",
+and the pre-existing (Day 1/Fix 3) sentence-start name check, which had no
+special-case for ordinary verbs, flagged them as invented names. The
+remaining 3 fallbacks were `invalid JSON: Extra data` — the model
+appending a second, self-correcting JSON block after the first. Neither
+cause is "stricter rules the validator newly enforced" — the name check
+was unchanged from before v2; v2's wording just happened to provoke verbs
+that check had never been tested against.
+
+**15-case quality eval (`evals/cases.json`), v3 vs. final (v4+v5):**
+
+| | Passed | Note |
+|---|---|---|
+| v3_baseline (avg of 2 runs) | 10/15 | `reports/day4_eval_v3_baseline_run1/2.json` |
+| final (avg of 2 runs) | 14/15 | `reports/day4_eval_final_run1/2.json` |
+
+**The entire 10→14 gain is the deadline rule, not a general quality
+improvement.** Every one of v3's 5 failures was a deadline-phrase violation
+on a case where a deadline should have been withheld; on every *other*
+criterion, in both runs, v3 passed everything final did. The one case both
+versions fail (E011) is unrelated to the deadline rule — see Known
+Limitations. Full per-case breakdown: `reports/day4_eval_grades_summary.md`.
+
+**Prompt injection:** 20/20 planted injection attempts ineffective, both
+before (`reports/day3_ai_aimed_detail.txt`) and after
+(`reports/day4_part2_delimiter_ai_aimed_detail.txt`) the v6 notes-delimiter
+safeguard — no measured change either way.
+
+**Test count:** 108 passed, 2 xfailed (`reports/day5_pytest.txt`), unchanged
+after Day 5 cleanup.
+
+**Messy-board stress test:** `data/messy_board.csv` (5,020 generated rows,
+fixed seed) processed in 1.06s with `--no-ai`: 2,524 stalled, 145 bad rows,
+20 warnings, 0 crashes (`reports/day5_messy_board_timing.txt`).
+
 ## Known Limitations
 
 Gaps found and deliberately left unfixed during Day 2, so they're
@@ -359,3 +457,35 @@ visible rather than silently absorbed:
   `stage_entered_date` - so the directive's stage guidance ("final_
   interview usually means feedback/decision pending") is a guess that
   is sometimes wrong in a way nothing in the data can correct.
+- **`config.yaml` is not validated; a missing stage or priority weight
+  crashes with a `KeyError`.** Validation was planned on Day 2 but never
+  built. Confirmed live on Day 5: deleting `stage_weights.interview` from
+  a copy of `config.yaml` and running against it produces a raw,
+  unhandled `KeyError: 'interview'` traceback from `ranking.py`, not a
+  clear `Error:` message (`reports/day5_broken_config.txt`).
+- **cp1252 fallback mangles non-Latin-1 characters.** When a CSV isn't
+  valid UTF-8 and the loader falls back to `cp1252` (Assumption 22),
+  characters cp1252 can't represent — Vietnamese/Yoruba tone marks, CJK,
+  etc. — are silently replaced with `?`. The fallback prevents a crash
+  but is a real, visible data-quality cost, not a transparent recovery.
+- **A single invented name at the start of a sentence, with no trigger
+  word, isn't caught** (`test_single_invented_name_without_trigger_word_not_caught`,
+  xfail). The invented-name heuristic (Assumption 11) catches two
+  consecutive capitalized words, or a capitalized word followed by
+  `should`/`needs`/`to` — but a lone name like "Marcus flagged this
+  candidate..." matches neither shape and passes through unflagged.
+  Narrowing the sentence-initial check in Day 2 (to stop flagging
+  ordinary verbs like "Collect") reopened this narrower gap.
+- **OpenRouter's `response_format=json_object` had no measurable
+  effect.** Tried on Day 2 (commit `2dbeee8`) to reduce the model's
+  occasional duplicate-JSON self-correction; it's accepted by the API
+  but didn't measurably change fallback rates, so it was kept as a
+  harmless addition rather than counted as a fix.
+- **All data is synthetic, and the hand-built sample has only 11 stalled
+  candidates.** `data/sample_board.csv`'s 25 rows were constructed to
+  cover specific cases (weekend roll-forward, stage-name normalization,
+  terminal stages, bad rows), not sampled from a real hiring board.
+  Every fallback-rate and eval number in this README is measured against
+  that small, synthetic set (or the 15 hand-built eval cases, or the
+  5,020-row generated stress-test board) — none of it reflects a real
+  company's candidate distribution or note-writing style.

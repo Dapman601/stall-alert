@@ -27,8 +27,6 @@ REQUIRED_FIELDS = [
     "role_priority",
 ]
 
-ALL_FIELDS = REQUIRED_FIELDS + ["last_contact_date", "notes"]
-
 VALID_PRIORITIES = {"high", "medium", "low"}
 
 DATE_FORMAT = "%Y-%m-%d"

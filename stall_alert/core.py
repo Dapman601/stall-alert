@@ -35,6 +35,7 @@ class Config:
 
 
 def load_config(path: str) -> Config:
+    """Load and normalize thresholds/terminal_stages/weights from a config.yaml path."""
     with open(path, encoding="utf-8") as f:
         raw = yaml.safe_load(f)
     return Config(
@@ -52,6 +53,7 @@ def normalize_stage(stage: str) -> str:
 
 
 def is_on_hold(notes: str) -> bool:
+    """True if notes mentions being on hold, unless negated (e.g. "no longer on hold")."""
     if _ON_HOLD_NEGATION_PATTERN.search(notes):
         return False
     return bool(_ON_HOLD_PATTERN.search(notes))

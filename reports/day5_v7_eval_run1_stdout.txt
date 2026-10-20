@@ -1,0 +1,17 @@
+E001: source=ai waiting_on='recruiter' action="Review Alice Mensah's application and schedule screening call"
+E002: source=ai waiting_on='recruiter' action='Review application and schedule screening call within 3 business days'
+E003: source=ai waiting_on='recruiter' action='Schedule phone screen with Carla Dupont for Product Manager role'
+E004: source=ai waiting_on='recruiter' action='Schedule screening call within 2 business days'
+E005: source=ai waiting_on='hiring_manager' action='Schedule interview once hiring manager returns from leave'
+E006: source=ai waiting_on='recruiter' action='Schedule next interview round within 3 business days'
+E007: source=ai waiting_on='hiring_manager' action='Follow up with hiring team for interview feedback and decision on Grace Lindqvist'
+E008: source=ai waiting_on='hiring_manager' action='Follow up with hiring team for interview feedback and decision within 3 business days'
+E009: source=ai waiting_on='candidate' action='Follow up with Ingrid Larsen to address any questions about the offer'
+E010: source=ai waiting_on='candidate' action='Follow up with Jamal Thiam on offer decision within 2 business days'
+E011: source=ai waiting_on='candidate' action='Follow up on competing offer timeline and our interview scheduling.'
+E012: source=ai waiting_on='recruiter' action='Schedule technical screening interview within 3 business days given competing offer timeline.'
+E013: source=ai waiting_on='recruiter' action='Follow up on interview feedback and schedule next round within 3 business days'
+E014: source=ai waiting_on='hiring_manager' action='Follow up with hiring manager for interview feedback within 3 business days'
+E015: source=ai waiting_on='candidate' action='Follow up on offer decision status within 2 business days'
+
+Saved 15 results to C:\Users\DELL\Documents\stall_alert\reports\day4_eval_v7_run1.json

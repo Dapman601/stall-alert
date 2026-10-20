@@ -1,0 +1,19 @@
+priority_weights:
+  high: 3
+  low: 1
+  medium: 2
+stage_weights:
+  applied: 1
+  final_interview: 3
+  offer: 4
+  screening: 1.5
+terminal_stages:
+- hired
+- rejected
+- withdrawn
+thresholds:
+  applied: 3
+  final_interview: 4
+  interview: 5
+  offer: 2
+  screening: 3
