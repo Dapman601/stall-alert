@@ -91,3 +91,12 @@ guessed.
   `evals/cases.json` (`reports/day5_eval_v7_run1.json`). No case changed verdict
   from v6. In short: removing the outdated example had no measured
   effect, as expected for a wording-only cleanup.
+
+- **Post-freeze addition (after Day 5), no directive change:**
+  `tests/test_e2e.py` (real-CLI subprocess tests against real files,
+  `--no-ai` only) and `scripts/run_demo.py` (runs `scripts/demo.md`'s
+  commands in order for rehearsal) were added for demo-video confidence.
+  Tests and scripts only — `directive.md` is still v7, and no
+  `stall_alert/` behavior changed. Verified: `pytest -v` →
+  `reports/day5_e2e_pytest.txt` (112 passed, 3 xfailed); `python
+  scripts/run_demo.py --no-pause` → `reports/day5_e2e_run_demo.txt`.

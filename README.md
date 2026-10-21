@@ -54,7 +54,19 @@ Flags:
 pytest
 ```
 
-All AI calls are mocked in tests; the suite never makes a network call.
+All AI calls are mocked in tests; the suite never makes a network call,
+**except** `tests/test_e2e.py`, which runs the real CLI as a subprocess
+against real files with `--no-ai` (still no network calls — `--no-ai`
+skips the AI layer entirely).
+
+**Post-freeze addition (after Day 5):** `tests/test_e2e.py` and
+`scripts/run_demo.py` were added for demo-video confidence/rehearsal.
+Tests only and a runner script — no change to `stall_alert/` behavior.
+`scripts/run_demo.py [--no-pause]` runs `scripts/demo.md`'s commands in
+order, printing a heading before each one and pausing for Enter between
+steps; its one AI-calling step reads `OPENROUTER_API_KEY` from the
+environment, never prints it, and is skipped with a message if the key
+isn't set.
 
 ## Running the quality eval
 

@@ -1,0 +1,114 @@
+
+============================================================
+STEP 1: tests
+============================================================
+$ pytest
+============================= test session starts =============================
+platform win32 -- Python 3.12.3, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\DELL\Documents\stall_alert
+plugins: anyio-4.15.1, dash-2.18.2, Faker-37.8.0, asyncio-1.3.0, cov-7.0.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 115 items
+
+tests\test_ai_actions.py ...............................x............... [ 40%]
+........x.........                                                       [ 56%]
+tests\test_cli.py ..                                                     [ 58%]
+tests\test_core.py .....................                                 [ 76%]
+tests\test_e2e.py ....x                                                  [ 80%]
+tests\test_loader.py ...................                                 [ 97%]
+tests\test_ranking.py ...                                                [100%]
+
+======================= 112 passed, 3 xfailed in 12.01s =======================
+(exit code: 0)
+
+============================================================
+STEP 2: sample board without AI
+============================================================
+$ python -m stall_alert data/sample_board.csv --today 2026-10-16 --no-ai --format table --top 3
+stall-alert report (today = 2026-10-16)
+
+Bad rows excluded: 4
+  row 17: missing required field 'stage_entered_date'
+  row 18: stage_entered_date '2026/10/10' is not a valid %Y-%m-%d date
+  row 19: stage_entered_date 2026-10-20 is after --today 2026-10-16
+  row 20: stage 'onboarding' (normalized 'onboarding') is not listed in config thresholds or terminal_stages
+Warnings: 1
+  row 21: last_contact_date '15th Oct' is not a valid %Y-%m-%d date; ignoring it
+On hold (not flagged): 1
+  C015 Olivia Brooks (interview)
+
+Stalled candidates, ranked (3):
+1. [63] Yara Singh (C025) - Engineer / final_interview, 11d in stage (threshold 4)
+   breakdown: 7 x 3 x 3 = 63
+   action [fallback] -> waiting_on=hiring_manager: Jon Ortiz should contact Yara Singh for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+2. [36] Karen White (C011) - Recruiter Ops / final-interview, 8d in stage (threshold 4)
+   breakdown: 4 x 3 x 3 = 36
+   action [fallback] -> waiting_on=hiring_manager: Sam Reed should contact Karen White for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+3. [18] Henry Cho (C008) - Designer / Final Interview, 7d in stage (threshold 4)
+   breakdown: 3 x 3 x 2 = 18
+   action [fallback] -> waiting_on=hiring_manager: Priya Nair should contact Henry Cho for a status update. (fallback reason: AI disabled via --no-ai flag)
+   raw_response: (none)
+(exit code: 0)
+
+============================================================
+STEP 3: with AI, --report
+============================================================
+$ python -m stall_alert data/sample_board.csv --today 2026-10-16 --report --format table --top 3
+=== AI fallback report ===
+stalled: 3  ai: 3  fallback: 0  fallback_rate: 0.0%
+fallback reasons by cause (not mutually exclusive):
+  (none)
+
+stall-alert report (today = 2026-10-16)
+
+Bad rows excluded: 4
+  row 17: missing required field 'stage_entered_date'
+  row 18: stage_entered_date '2026/10/10' is not a valid %Y-%m-%d date
+  row 19: stage_entered_date 2026-10-20 is after --today 2026-10-16
+  row 20: stage 'onboarding' (normalized 'onboarding') is not listed in config thresholds or terminal_stages
+Warnings: 1
+  row 21: last_contact_date '15th Oct' is not a valid %Y-%m-%d date; ignoring it
+On hold (not flagged): 1
+  C015 Olivia Brooks (interview)
+
+Stalled candidates, ranked (3):
+1. [63] Yara Singh (C025) - Engineer / final_interview, 11d in stage (threshold 4)
+   breakdown: 7 x 3 x 3 = 63
+   action [ai] -> waiting_on=hiring_manager: Follow up with hiring team for final interview feedback within 3 business days
+   raw_response: ```json
+{"action": "Follow up with hiring team for final interview feedback within 3 business days", "waiting_on": "hiring_manager", "reason": "11 business days in final_interview, 7 business days over threshold"}
+```
+2. [36] Karen White (C011) - Recruiter Ops / final-interview, 8d in stage (threshold 4)
+   breakdown: 4 x 3 x 3 = 36
+   action [ai] -> waiting_on=hiring_manager: Follow up with hiring team for feedback on Karen White's final interview within 2 business days
+   raw_response: ```json
+{"action": "Follow up with hiring team for feedback on Karen White's final interview within 2 business days", "waiting_on": "hiring_manager", "reason": "8 business days in final interview, 4 over threshold, feedback pending"}
+```
+3. [18] Henry Cho (C008) - Designer / Final Interview, 7d in stage (threshold 4)
+   breakdown: 3 x 3 x 2 = 18
+   action [ai] -> waiting_on=hiring_manager: Follow up with hiring team for interview feedback and decision on Henry Cho.
+   raw_response: ```json
+{"action": "Follow up with hiring team for interview feedback and decision on Henry Cho.", "waiting_on": "hiring_manager", "reason": "7 business days in final_interview, 3 over threshold, feedback pending."}
+```
+(exit code: 0)
+
+============================================================
+STEP 4: one deliberate failure, handled cleanly
+============================================================
+$ python -m stall_alert data/header_capitalized.csv --today 2026-10-20 --no-ai
+Error: CSV is missing required column(s): stage
+Columns found in the file: candidate_id, candidate_name, role, Stage, stage_entered_date, owner, last_contact_date, role_priority, notes
+  'stage' not found - did you mean 'Stage'?
+(exit code: 1)
+
+============================================================
+STEP 5: one honest limitation
+============================================================
+$ python -m stall_alert data/realistic_export.csv --today 2026-10-20 --no-ai
+Error: CSV is missing required column(s): candidate_id, candidate_name, role, stage, stage_entered_date, owner, role_priority
+Columns found in the file: Candidate Name, Current Stage, Date Moved, Recruiter, Role Applied
+  'candidate_id' not found - did you mean 'Candidate Name'?
+  'candidate_name' not found - did you mean 'Candidate Name'?
+(exit code: 1)
